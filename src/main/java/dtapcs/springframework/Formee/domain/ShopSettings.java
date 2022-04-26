@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
-public class ShopSetting {
+public class ShopSettings {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -22,10 +22,10 @@ public class ShopSetting {
     private String shopId;
     private String customizationJson;
 
-    public ShopSetting() {
+    public ShopSettings() {
     }
 
-    public ShopSetting(String shopId, String customizationJson) {
+    public ShopSettings(String shopId, String customizationJson) {
         this.shopId = shopId;
         this.customizationJson = customizationJson;
     }
@@ -64,7 +64,7 @@ public class ShopSetting {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ShopSetting that = (ShopSetting) o;
+        ShopSettings that = (ShopSettings) o;
 
         return uuid.equals(that.uuid);
     }

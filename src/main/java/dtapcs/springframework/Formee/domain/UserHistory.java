@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.domain;
 
+import dtapcs.springframework.Formee.enums.HistoryType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -21,16 +22,15 @@ public class UserHistory {
     private UUID uuid;
 
     private String userId;
-    private Enum type;
+
+    private HistoryType type;
     private LocalDateTime accessedAt;
 
-    public UserHistory(String userId, Enum type, LocalDateTime accessedAt) {
-
+    public UserHistory(String userId, HistoryType type, LocalDateTime accessedAt) {
         this.userId = userId;
         this.type = type;
         this.accessedAt = accessedAt;
     }
-
 
     public String getUserId() {
         return userId;
@@ -40,11 +40,11 @@ public class UserHistory {
         this.userId = userId;
     }
 
-    public Enum getType() {
+    public HistoryType getType() {
         return type;
     }
 
-    public void setType(Enum type) {
+    public void setType(HistoryType type) {
         this.type = type;
     }
 
