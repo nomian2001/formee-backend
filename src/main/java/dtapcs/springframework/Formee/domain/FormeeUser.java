@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-public class User {
+public class FormeeUser {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -28,10 +28,10 @@ public class User {
     private String profilePicture;
     private LocalDateTime createAt;
 
-    public User() {
+    public FormeeUser() {
     }
 
-    public User(String username, String fullName, String password, int gender, String email, String profilePicture, LocalDateTime createAt) {
+    public FormeeUser(String username, String fullName, String password, int gender, String email, String profilePicture, LocalDateTime createAt) {
         this.username = username;
         this.fullName = fullName;
         this.password = password;
@@ -120,7 +120,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        FormeeUser user = (FormeeUser) o;
 
         return uuid.equals(user.uuid);
     }

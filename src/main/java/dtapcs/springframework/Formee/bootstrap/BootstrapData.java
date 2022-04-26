@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.bootstrap;
 
-import dtapcs.springframework.Formee.domain.User;
+import dtapcs.springframework.Formee.domain.FormeeUser;
+import dtapcs.springframework.Formee.firebase.FirebaseService;
 import dtapcs.springframework.Formee.repositories.UserHistoryRepository;
 import dtapcs.springframework.Formee.repositories.UserRepository;
 import dtapcs.springframework.Formee.repositories.UserSettingsRepository;
@@ -19,7 +20,7 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User Dung = new User();
+        FormeeUser Dung = new FormeeUser();
         Dung.setUsername("pthdung");
         Dung.setFullName("Pham Tran Hien Dung");
         Dung.setPassword("Dung123456");
@@ -29,5 +30,8 @@ public class BootstrapData implements CommandLineRunner {
         userRepository.save(Dung);
 
         System.out.println(Dung);
+
+        FirebaseService.InitFirebase();
+
     }
 }
