@@ -19,22 +19,22 @@ public class Form {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private Long shopId;
+    private UUID shopId;
     private String layoutJson;
 
     public Form() {
     }
 
-    public Form(Long shopId, String layoutJson) {
+    public Form(UUID shopId, String layoutJson) {
         this.shopId = shopId;
         this.layoutJson = layoutJson;
     }
 
-    public Long getShopId() {
+    public UUID getShopId() {
         return shopId;
     }
 
-    public void setShopId(Long shopId) {
+    public void setShopId(UUID shopId) {
         this.shopId = shopId;
     }
 

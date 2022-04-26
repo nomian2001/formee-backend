@@ -19,24 +19,24 @@ public class Comment {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private String orderId;
+    private UUID orderId;
     private Boolean fromSeller;
     private String parentCommentId;
 
     public Comment() {
     }
 
-    public Comment(String orderId, Boolean fromSeller, String parentCommentId) {
+    public Comment(UUID orderId, Boolean fromSeller, String parentCommentId) {
         this.orderId = orderId;
         this.fromSeller = fromSeller;
         this.parentCommentId = parentCommentId;
     }
 
-    public String getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 

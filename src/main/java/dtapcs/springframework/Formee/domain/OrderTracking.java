@@ -18,13 +18,13 @@ public class OrderTracking {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
     private String key;
-    private String orderId;
+    private UUID orderId;
     private String permissionJson;
 
     public OrderTracking() {
     }
 
-    public OrderTracking(String key, String orderId, String permissionJson) {
+    public OrderTracking(String key, UUID orderId, String permissionJson) {
         this.key = key;
         this.orderId = orderId;
         this.permissionJson = permissionJson;
@@ -38,11 +38,11 @@ public class OrderTracking {
         this.key = key;
     }
 
-    public String getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 

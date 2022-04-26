@@ -19,10 +19,10 @@ public class UserSettings {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private String userId;
+    private UUID userId;
     private String settingsJson;
 
-    public UserSettings(String userId, String settingsJson) {
+    public UserSettings(UUID userId, String settingsJson) {
         this.userId = userId;
         this.settingsJson = settingsJson;
     }
@@ -31,11 +31,11 @@ public class UserSettings {
         return uuid;
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 

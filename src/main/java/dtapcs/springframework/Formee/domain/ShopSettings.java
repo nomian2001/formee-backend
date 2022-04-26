@@ -19,22 +19,22 @@ public class ShopSettings {
     @Column( updatable = false, nullable = false)
     private UUID uuid;
 
-    private String shopId;
+    private UUID shopId;
     private String customizationJson;
 
     public ShopSettings() {
     }
 
-    public ShopSettings(String shopId, String customizationJson) {
+    public ShopSettings(UUID shopId, String customizationJson) {
         this.shopId = shopId;
         this.customizationJson = customizationJson;
     }
 
-    public String getShopId() {
+    public UUID getShopId() {
         return shopId;
     }
 
-    public void setShopId(String shopId) {
+    public void setShopId(UUID shopId) {
         this.shopId = shopId;
     }
 

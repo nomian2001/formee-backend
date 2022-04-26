@@ -21,22 +21,22 @@ public class UserHistory {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private String userId;
+    private UUID userId;
 
     private HistoryType type;
     private LocalDateTime accessedAt;
 
-    public UserHistory(String userId, HistoryType type, LocalDateTime accessedAt) {
+    public UserHistory(UUID userId, HistoryType type, LocalDateTime accessedAt) {
         this.userId = userId;
         this.type = type;
         this.accessedAt = accessedAt;
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 

@@ -20,8 +20,8 @@ public class FormResponse {
     )
     @Column(updatable = false, nullable = false)
     private UUID uuid;
-    private Long formId;
-    private Long customerId;
+    private UUID formId;
+    private UUID customerId;
     private SubmitStatus submitStatus;
     private OrderStatus orderStatus;
     private PaymentStatus paymentStatus;
@@ -30,7 +30,7 @@ public class FormResponse {
     public FormResponse() {
     }
 
-    public FormResponse(Long formId, Long customerId, SubmitStatus submitStatus, OrderStatus orderStatus, PaymentStatus paymentStatus, int discountPercentage) {
+    public FormResponse(UUID formId, UUID customerId, SubmitStatus submitStatus, OrderStatus orderStatus, PaymentStatus paymentStatus, int discountPercentage) {
         this.formId = formId;
         this.customerId = customerId;
         this.submitStatus = submitStatus;
@@ -39,19 +39,19 @@ public class FormResponse {
         this.discountPercentage = discountPercentage;
     }
 
-    public Long getFormId() {
+    public UUID getFormId() {
         return formId;
     }
 
-    public void setFormId(Long formId) {
+    public void setFormId(UUID formId) {
         this.formId = formId;
     }
 
-    public Long getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Long customerId) {
+    public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
     }
 

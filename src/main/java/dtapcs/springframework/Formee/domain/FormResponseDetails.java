@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.domain;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 
 @Entity
@@ -9,14 +10,12 @@ public class FormResponseDetails{
     @EmbeddedId
     private FormResponseDetailsId id;
 
-    private String responseId;
-    private String productId;
+
     private int quantity;
     private Long productOrderPrice;
 
-    public FormResponseDetails(String responseId, String productId, int quantity, Long productOrderPrice) {
-        this.responseId = responseId;
-        this.productId = productId;
+    public FormResponseDetails(UUID responseId,UUID productId ,int quantity, Long productOrderPrice) {
+        this.id = new FormResponseDetailsId(responseId,productId);
         this.quantity = quantity;
         this.productOrderPrice = productOrderPrice;
     }
@@ -24,20 +23,12 @@ public class FormResponseDetails{
     public FormResponseDetails() {
     }
 
-    public String getResponseId() {
-        return responseId;
+    public UUID getResponseId() {
+        return id.getResponseId();
     }
 
-    public void setResponseId(String responseId) {
-        this.responseId = responseId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public UUID getProductId() {
+        return id.getProductId();
     }
 
     public int getQuantity() {
@@ -64,8 +55,6 @@ public class FormResponseDetails{
     public String toString() {
         return "FormResponseDetails{" +
                 "id=" + id +
-                ", responseId='" + responseId + '\'' +
-                ", productId='" + productId + '\'' +
                 ", quantity=" + quantity +
                 ", productOrderPrice=" + productOrderPrice +
                 '}';
