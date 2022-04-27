@@ -1,7 +1,7 @@
 package dtapcs.springframework.Formee.bootstrap;
 
 import dtapcs.springframework.Formee.domain.FormeeUser;
-import dtapcs.springframework.Formee.firebase.FirebaseService;
+
 import dtapcs.springframework.Formee.repositories.UserHistoryRepository;
 import dtapcs.springframework.Formee.repositories.UserRepository;
 import dtapcs.springframework.Formee.repositories.UserSettingsRepository;
@@ -30,8 +30,5 @@ public class BootstrapData implements CommandLineRunner {
         userRepository.save(Dung);
 
         System.out.println(Dung);
-
-        FirebaseService.InitFirebase();
-
     }
 }

@@ -18,7 +18,7 @@ public class FormResponse {
     )
     @Column(updatable = false, nullable = false)
     private UUID uuid;
-//    @OneToMany (fetch = FetchType.LAZY, mappedBy = id.getResponseId())
+//    @OneToMany (fetch = FetchType.LAZY, mappedBy = "response_id")
 //    Set<FormResponseDetails> formResponseDetails;
     @OneToMany (fetch = FetchType.LAZY, mappedBy = "orderId")
     Set<Comment> comments;
