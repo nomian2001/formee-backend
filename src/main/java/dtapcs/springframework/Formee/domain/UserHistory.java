@@ -3,10 +3,7 @@ package dtapcs.springframework.Formee.domain;
 import dtapcs.springframework.Formee.enums.HistoryType;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,22 +18,24 @@ public class UserHistory {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private UUID userId;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="userId")
+    private FormeeUser userId;
 
     private HistoryType type;
     private LocalDateTime accessedAt;
 
-    public UserHistory(UUID userId, HistoryType type, LocalDateTime accessedAt) {
+    public UserHistory(FormeeUser userId, HistoryType type, LocalDateTime accessedAt) {
         this.userId = userId;
         this.type = type;
         this.accessedAt = accessedAt;
     }
 
-    public UUID getUserId() {
+    public FormeeUser getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(FormeeUser userId) {
         this.userId = userId;
     }
 

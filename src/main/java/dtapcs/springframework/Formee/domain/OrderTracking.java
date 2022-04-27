@@ -2,10 +2,7 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 @Entity
 public class OrderTracking {
@@ -18,13 +15,15 @@ public class OrderTracking {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
     private String key;
-    private UUID orderId;
+    @OneToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="orderId")
+    private FormResponse orderId;
     private String permissionJson;
 
     public OrderTracking() {
     }
 
-    public OrderTracking(String key, UUID orderId, String permissionJson) {
+    public OrderTracking(String key, FormResponse orderId, String permissionJson) {
         this.key = key;
         this.orderId = orderId;
         this.permissionJson = permissionJson;
@@ -38,11 +37,11 @@ public class OrderTracking {
         this.key = key;
     }
 
-    public UUID getOrderId() {
+    public FormResponse getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(UUID orderId) {
+    public void setOrderId(FormResponse orderId) {
         this.orderId = orderId;
     }
 

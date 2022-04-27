@@ -10,7 +10,6 @@ public class FormResponseDetails{
     @EmbeddedId
     private FormResponseDetailsId id;
 
-
     private int quantity;
     private Long productOrderPrice;
 

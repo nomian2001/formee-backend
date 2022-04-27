@@ -2,10 +2,7 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -19,24 +16,26 @@ public class Comment {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private UUID orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orderId")
+    private FormResponse orderId;
     private Boolean fromSeller;
     private String parentCommentId;
 
     public Comment() {
     }
 
-    public Comment(UUID orderId, Boolean fromSeller, String parentCommentId) {
+    public Comment(FormResponse orderId, Boolean fromSeller, String parentCommentId) {
         this.orderId = orderId;
         this.fromSeller = fromSeller;
         this.parentCommentId = parentCommentId;
     }
 
-    public UUID getOrderId() {
+    public FormResponse getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(UUID orderId) {
+    public void setOrderId(FormResponse orderId) {
         this.orderId = orderId;
     }
 

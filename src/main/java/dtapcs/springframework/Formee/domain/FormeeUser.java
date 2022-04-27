@@ -2,11 +2,9 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +18,15 @@ public class FormeeUser {
     @Column( updatable = false, nullable = false)
     private UUID uuid;
 
+    @OneToOne (fetch = FetchType.LAZY, mappedBy = "userId")
+    private UserSettings userSettings;
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "userId")
+    private Set<UserHistory> userHistories;
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "customerId")
+    private Set<FormResponse> formResponses;
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "ownerId")
+    private Set<Shop> shops;
+
     private String username;
     private String fullName;
     private String password;
@@ -31,7 +38,11 @@ public class FormeeUser {
     public FormeeUser() {
     }
 
-    public FormeeUser(String username, String fullName, String password, int gender, String email, String profilePicture, LocalDateTime createAt) {
+    public FormeeUser(UserSettings userSettings, Set<UserHistory> userHistories, Set<FormResponse> formResponses, Set<Shop> shops, String username, String fullName, String password, int gender, String email, String profilePicture, LocalDateTime createAt) {
+        this.userSettings = userSettings;
+        this.userHistories = userHistories;
+        this.formResponses = formResponses;
+        this.shops = shops;
         this.username = username;
         this.fullName = fullName;
         this.password = password;
@@ -39,6 +50,30 @@ public class FormeeUser {
         this.email = email;
         this.profilePicture = profilePicture;
         this.createAt = createAt;
+    }
+
+    public Set<UserHistory> getUserHistories() {
+        return userHistories;
+    }
+
+    public void setUserHistories(Set<UserHistory> userHistories) {
+        this.userHistories = userHistories;
+    }
+
+    public Set<FormResponse> getFormResponses() {
+        return formResponses;
+    }
+
+    public void setFormResponses(Set<FormResponse> formResponses) {
+        this.formResponses = formResponses;
+    }
+
+    public Set<Shop> getShops() {
+        return shops;
+    }
+
+    public void setShops(Set<Shop> shops) {
+        this.shops = shops;
     }
 
     public String getUsername() {
@@ -99,6 +134,14 @@ public class FormeeUser {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public UserSettings getUserSettings() {
+        return userSettings;
+    }
+
+    public void setUserSettings(UserSettings userSettings) {
+        this.userSettings = userSettings;
     }
 
     @Override

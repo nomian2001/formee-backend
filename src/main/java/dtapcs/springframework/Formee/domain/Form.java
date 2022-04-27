@@ -2,10 +2,8 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,22 +17,35 @@ public class Form {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private UUID shopId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shopId")
+    private Shop shopId;
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "formId")
+    Set<FormResponse> formResponses;
     private String layoutJson;
 
     public Form() {
     }
 
-    public Form(UUID shopId, String layoutJson) {
+    public Form(Shop shopId, Set<FormResponse> formResponses, String layoutJson) {
         this.shopId = shopId;
+        this.formResponses = formResponses;
         this.layoutJson = layoutJson;
     }
 
-    public UUID getShopId() {
+    public Set<FormResponse> getFormResponses() {
+        return formResponses;
+    }
+
+    public void setFormResponses(Set<FormResponse> formResponses) {
+        this.formResponses = formResponses;
+    }
+
+    public Shop getShopId() {
         return shopId;
     }
 
-    public void setShopId(UUID shopId) {
+    public void setShopId(Shop shopId) {
         this.shopId = shopId;
     }
 

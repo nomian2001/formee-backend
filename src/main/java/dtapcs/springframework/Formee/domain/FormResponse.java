@@ -5,10 +5,8 @@ import dtapcs.springframework.Formee.enums.PaymentStatus;
 import dtapcs.springframework.Formee.enums.SubmitStatus;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 @Entity
 public class FormResponse {
@@ -20,8 +18,18 @@ public class FormResponse {
     )
     @Column(updatable = false, nullable = false)
     private UUID uuid;
-    private UUID formId;
-    private UUID customerId;
+//    @OneToMany (fetch = FetchType.LAZY, mappedBy = id.getResponseId())
+//    Set<FormResponseDetails> formResponseDetails;
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "orderId")
+    Set<Comment> comments;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="customerId")
+    private FormeeUser customerId;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="formId")
+    private Form formId;
+    @OneToOne (fetch = FetchType.LAZY, mappedBy = "orderId")
+    OrderTracking orderTracking;
     private SubmitStatus submitStatus;
     private OrderStatus orderStatus;
     private PaymentStatus paymentStatus;
@@ -30,28 +38,46 @@ public class FormResponse {
     public FormResponse() {
     }
 
-    public FormResponse(UUID formId, UUID customerId, SubmitStatus submitStatus, OrderStatus orderStatus, PaymentStatus paymentStatus, int discountPercentage) {
-        this.formId = formId;
+    public FormResponse(Set<Comment> comments, FormeeUser customerId, Form formId, OrderTracking orderTracking, SubmitStatus submitStatus, OrderStatus orderStatus, PaymentStatus paymentStatus, int discountPercentage) {
+        this.comments = comments;
         this.customerId = customerId;
+        this.formId = formId;
+        this.orderTracking = orderTracking;
         this.submitStatus = submitStatus;
         this.orderStatus = orderStatus;
         this.paymentStatus = paymentStatus;
         this.discountPercentage = discountPercentage;
     }
 
-    public UUID getFormId() {
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public OrderTracking getOrderTracking() {
+        return orderTracking;
+    }
+
+    public void setOrderTracking(OrderTracking orderTracking) {
+        this.orderTracking = orderTracking;
+    }
+
+    public Form getFormId() {
         return formId;
     }
 
-    public void setFormId(UUID formId) {
+    public void setFormId(Form formId) {
         this.formId = formId;
     }
 
-    public UUID getCustomerId() {
+    public FormeeUser getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(FormeeUser customerId) {
         this.customerId = customerId;
     }
 

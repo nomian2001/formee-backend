@@ -2,10 +2,7 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -19,10 +16,14 @@ public class UserSettings {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    private UUID userId;
+    @OneToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", unique = true)
+
+    private FormeeUser userId;
+
     private String settingsJson;
 
-    public UserSettings(UUID userId, String settingsJson) {
+    public UserSettings(FormeeUser userId, String settingsJson) {
         this.userId = userId;
         this.settingsJson = settingsJson;
     }
@@ -31,11 +32,11 @@ public class UserSettings {
         return uuid;
     }
 
-    public UUID getUserId() {
+    public FormeeUser getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(FormeeUser userId) {
         this.userId = userId;
     }
 
@@ -54,7 +55,7 @@ public class UserSettings {
     public String toString() {
         return "UserSettings{" +
                 "uuid=" + uuid +
-                ", userId='" + userId + '\'' +
+                ", userId=" + userId +
                 ", settingsJson='" + settingsJson + '\'' +
                 '}';
     }

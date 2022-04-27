@@ -2,10 +2,8 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -18,24 +16,60 @@ public class Shop {
     )
     @Column(updatable = false, nullable = false)
     private UUID uuid;
-    private String ownerId;
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="ownerId")
+    private FormeeUser ownerId;
+    @OneToOne (fetch = FetchType.LAZY, mappedBy = "shopId")
+    private ShopSettings shopSettings;
+    @OneToOne (fetch = FetchType.LAZY, mappedBy = "shopId")
+    private Form form;
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "shopId")
+    Set<Product> products;
     private String name;
     private String description;
 
     public Shop() {
     }
 
-    public Shop(String ownerId, String name, String description) {
+    public Shop(FormeeUser ownerId, ShopSettings shopSettings, Form form, Set<Product> products, String name, String description) {
         this.ownerId = ownerId;
+        this.shopSettings = shopSettings;
+        this.form = form;
+        this.products = products;
         this.name = name;
         this.description = description;
     }
 
-    public String getOwnerId() {
+    public ShopSettings getShopSettings() {
+        return shopSettings;
+    }
+
+    public void setShopSettings(ShopSettings shopSettings) {
+        this.shopSettings = shopSettings;
+    }
+
+    public Form getForm() {
+        return form;
+    }
+
+    public void setForm(Form form) {
+        this.form = form;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
+    public FormeeUser getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public void setOwnerId(FormeeUser ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -63,7 +97,10 @@ public class Shop {
     public String toString() {
         return "Shop{" +
                 "uuid=" + uuid +
-                ", ownerId='" + ownerId + '\'' +
+                ", ownerId=" + ownerId +
+                ", shopSettings=" + shopSettings +
+                ", form=" + form +
+                ", products=" + products +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';

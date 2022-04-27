@@ -2,10 +2,7 @@ package dtapcs.springframework.Formee.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +16,9 @@ public class Product {
     @Column( updatable = false, nullable = false)
     private UUID uuid;
 
-    private UUID shopId;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "shopId")
+    private Shop shopId;
     private String name;
     private String description;
     private Long inventory;
@@ -28,7 +27,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(UUID shopId, String name, String description, Long inventory, Long productPrice) {
+    public Product(Shop shopId, String name, String description, Long inventory, Long productPrice) {
         this.shopId = shopId;
         this.name = name;
         this.description = description;
@@ -36,11 +35,12 @@ public class Product {
         this.productPrice = productPrice;
     }
 
-    public UUID getShopId() {
+
+    public Shop getShopId() {
         return shopId;
     }
 
-    public void setShopId(UUID shopId) {
+    public void setShopId(Shop shopId) {
         this.shopId = shopId;
     }
 
