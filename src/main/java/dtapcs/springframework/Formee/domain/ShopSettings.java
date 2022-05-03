@@ -1,10 +1,12 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@Data
 @Entity
 public class ShopSettings {
     @Id
@@ -27,26 +29,6 @@ public class ShopSettings {
     public ShopSettings(Shop shopId, String customizationJson) {
         this.shopId = shopId;
         this.customizationJson = customizationJson;
-    }
-
-    public Shop getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Shop shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getCustomizationJson() {
-        return customizationJson;
-    }
-
-    public void setCustomizationJson(String customizationJson) {
-        this.customizationJson = customizationJson;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     @Override

@@ -1,9 +1,12 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
+
+@Data
 @Entity
 public class OrderTracking {
     @Id
@@ -27,34 +30,6 @@ public class OrderTracking {
         this.key = key;
         this.orderId = orderId;
         this.permissionJson = permissionJson;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public FormResponse getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(FormResponse orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getPermissionJson() {
-        return permissionJson;
-    }
-
-    public void setPermissionJson(String permissionJson) {
-        this.permissionJson = permissionJson;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     @Override

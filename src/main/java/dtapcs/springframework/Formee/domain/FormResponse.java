@@ -3,11 +3,14 @@ package dtapcs.springframework.Formee.domain;
 import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.enums.PaymentStatus;
 import dtapcs.springframework.Formee.enums.SubmitStatus;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
+
+@Data
 @Entity
 public class FormResponse {
     @Id
@@ -47,74 +50,6 @@ public class FormResponse {
         this.orderStatus = orderStatus;
         this.paymentStatus = paymentStatus;
         this.discountPercentage = discountPercentage;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public OrderTracking getOrderTracking() {
-        return orderTracking;
-    }
-
-    public void setOrderTracking(OrderTracking orderTracking) {
-        this.orderTracking = orderTracking;
-    }
-
-    public Form getFormId() {
-        return formId;
-    }
-
-    public void setFormId(Form formId) {
-        this.formId = formId;
-    }
-
-    public FormeeUser getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(FormeeUser customerId) {
-        this.customerId = customerId;
-    }
-
-    public SubmitStatus getSubmitStatus() {
-        return submitStatus;
-    }
-
-    public void setSubmitStatus(SubmitStatus submitStatus) {
-        this.submitStatus = submitStatus;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public int getDiscountPercentage() {
-        return discountPercentage;
-    }
-
-    public void setDiscountPercentage(int discountPercentage) {
-        this.discountPercentage = discountPercentage;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     @Override

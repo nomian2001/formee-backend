@@ -20,15 +20,15 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        FormeeUser Dung = new FormeeUser();
-        Dung.setUsername("pthdung");
-        Dung.setFullName("Pham Tran Hien Dung");
-        Dung.setPassword("Dung123456");
-        Dung.setGender(1);
-        Dung.setEmail("pthdung@gmail.com");
-        Dung.setProfilePicture("XXXXXX");
-        userRepository.save(Dung);
+//        FormeeUser Dung = new FormeeUser();
+//        Dung.setUsername("pthdung");
+//        Dung.setFullName("Pham Tran Hien Dung");
+//        Dung.setPassword("Dung123456");
+//        Dung.setGender(1);
+//        Dung.setEmail("pthdung@gmail.com");
+//        Dung.setProfilePicture("XXXXXX");
+//        userRepository.save(Dung);
 
-        System.out.println(Dung);
+        //System.out.println(Dung);
     }
 }

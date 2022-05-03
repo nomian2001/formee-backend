@@ -1,12 +1,14 @@
 package dtapcs.springframework.Formee.domain;
 
 import dtapcs.springframework.Formee.enums.HistoryType;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
 @Entity
 public class UserHistory {
     @Id
@@ -29,34 +31,6 @@ public class UserHistory {
         this.userId = userId;
         this.type = type;
         this.accessedAt = accessedAt;
-    }
-
-    public FormeeUser getUserId() {
-        return userId;
-    }
-
-    public void setUserId(FormeeUser userId) {
-        this.userId = userId;
-    }
-
-    public HistoryType getType() {
-        return type;
-    }
-
-    public void setType(HistoryType type) {
-        this.type = type;
-    }
-
-    public LocalDateTime getAccessedAt() {
-        return accessedAt;
-    }
-
-    public void setAccessedAt(LocalDateTime accessedAt) {
-        this.accessedAt = accessedAt;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     public UserHistory() {

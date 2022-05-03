@@ -1,10 +1,12 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@Data
 @Entity
 public class Product {
     @Id
@@ -33,51 +35,6 @@ public class Product {
         this.description = description;
         this.inventory = inventory;
         this.productPrice = productPrice;
-    }
-
-
-    public Shop getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Shop shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Long inventory) {
-        this.inventory = inventory;
-    }
-
-    public Long getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(Long productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     @Override

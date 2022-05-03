@@ -1,10 +1,11 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
-
+@Data
 @Entity
 public class Comment {
     @Id
@@ -22,41 +23,13 @@ public class Comment {
     private Boolean fromSeller;
     private String parentCommentId;
 
-    public Comment() {
-    }
-
     public Comment(FormResponse orderId, Boolean fromSeller, String parentCommentId) {
         this.orderId = orderId;
         this.fromSeller = fromSeller;
         this.parentCommentId = parentCommentId;
     }
 
-    public FormResponse getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(FormResponse orderId) {
-        this.orderId = orderId;
-    }
-
-    public Boolean getFromSeller() {
-        return fromSeller;
-    }
-
-    public void setFromSeller(Boolean fromSeller) {
-        this.fromSeller = fromSeller;
-    }
-
-    public String getParentCommentId() {
-        return parentCommentId;
-    }
-
-    public void setParentCommentId(String parentCommentId) {
-        this.parentCommentId = parentCommentId;
-    }
-
-    public UUID getUuid() {
-        return uuid;
+    public Comment() {
     }
 
     @Override

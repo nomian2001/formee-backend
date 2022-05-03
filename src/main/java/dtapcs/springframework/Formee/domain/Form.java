@@ -1,11 +1,13 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
+@Data
 @Entity
 public class Form {
     @Id
@@ -31,34 +33,6 @@ public class Form {
         this.shopId = shopId;
         this.formResponses = formResponses;
         this.layoutJson = layoutJson;
-    }
-
-    public Set<FormResponse> getFormResponses() {
-        return formResponses;
-    }
-
-    public void setFormResponses(Set<FormResponse> formResponses) {
-        this.formResponses = formResponses;
-    }
-
-    public Shop getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Shop shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getLayoutJson() {
-        return layoutJson;
-    }
-
-    public void setLayoutJson(String layoutJson) {
-        this.layoutJson = layoutJson;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.UUID;
 
-
+@Data
 @Entity
 public class FormResponseDetails{
 
@@ -20,34 +22,6 @@ public class FormResponseDetails{
     }
 
     public FormResponseDetails() {
-    }
-
-    public UUID getResponseId() {
-        return id.getResponseId();
-    }
-
-    public UUID getProductId() {
-        return id.getProductId();
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Long getProductOrderPrice() {
-        return productOrderPrice;
-    }
-
-    public void setProductOrderPrice(Long productOrderPrice) {
-        this.productOrderPrice = productOrderPrice;
-    }
-
-    public FormResponseDetailsId getId() {
-        return id;
     }
 
     @Override

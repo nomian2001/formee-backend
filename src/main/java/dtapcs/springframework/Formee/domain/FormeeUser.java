@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
+@Data
 @Entity
 public class FormeeUser {
     @Id
@@ -52,97 +54,6 @@ public class FormeeUser {
         this.createAt = createAt;
     }
 
-    public Set<UserHistory> getUserHistories() {
-        return userHistories;
-    }
-
-    public void setUserHistories(Set<UserHistory> userHistories) {
-        this.userHistories = userHistories;
-    }
-
-    public Set<FormResponse> getFormResponses() {
-        return formResponses;
-    }
-
-    public void setFormResponses(Set<FormResponse> formResponses) {
-        this.formResponses = formResponses;
-    }
-
-    public Set<Shop> getShops() {
-        return shops;
-    }
-
-    public void setShops(Set<Shop> shops) {
-        this.shops = shops;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getGender() {
-        return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public UserSettings getUserSettings() {
-        return userSettings;
-    }
-
-    public void setUserSettings(UserSettings userSettings) {
-        this.userSettings = userSettings;
-    }
 
     @Override
     public String toString() {
