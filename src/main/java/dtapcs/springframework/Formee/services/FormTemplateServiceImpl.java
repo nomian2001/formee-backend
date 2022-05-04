@@ -44,4 +44,9 @@ public class FormTemplateServiceImpl implements FormTemplateService {
                 .map(formTemplateFullMapper::formTemplateToFormTemplateFullDTO)
                 .collect(Collectors.toList());
     }
+    @Override
+    public String createFormTemplate(FormTemplate formTemplate)
+    {
+        return null;
+    }
 }

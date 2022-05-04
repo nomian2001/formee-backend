@@ -11,4 +11,5 @@ public interface FormTemplateService {
     List<FormTemplateSummaryDTO> getAllFormTemplateSummary();
     FormTemplate getFormTemplateByID(UUID id);
     List<FormTemplateFullDTO> getAllFormTemplateFull();
+    String createFormTemplate(FormTemplate formTemplate);
 }
