@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
-public interface UserRepository extends CrudRepository<FormeeUser, UUID> {
+public interface UserRepository extends CrudRepository<FormeeUser, String> {
 }

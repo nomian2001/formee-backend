@@ -12,13 +12,8 @@ import java.util.UUID;
 @Entity
 public class FormeeUser {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     @Column( updatable = false, nullable = false)
-    private UUID uuid;
+    private String uuid;
 
     @OneToOne (fetch = FetchType.LAZY, mappedBy = "userId")
     private UserSettings userSettings;
@@ -38,6 +33,10 @@ public class FormeeUser {
     private LocalDateTime createAt;
 
     public FormeeUser() {
+    }
+
+    public FormeeUser(String uuid) {
+        this.uuid = uuid;
     }
 
     public FormeeUser(UserSettings userSettings, Set<UserHistory> userHistories, Set<FormResponse> formResponses, Set<Shop> shops, String username, String fullName, String password, int gender, String email, String profilePicture, LocalDateTime createAt) {
