@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,7 +28,8 @@ public class FormResponse {
     Set<Comment> comments;
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name="customerId")
-    private FormeeUser customerId;
+    private FormeeUser customerId; //for registed user
+    private String customerName; //for anonymous customer
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name="formId")
     private Form formId;
@@ -36,6 +38,7 @@ public class FormResponse {
     private SubmitStatus submitStatus;
     private OrderStatus orderStatus;
     private PaymentStatus paymentStatus;
+    private LocalDateTime createdDate;
     int discountPercentage;
 
     public FormResponse() {
@@ -63,6 +66,13 @@ public class FormResponse {
                 ", paymentStatus=" + paymentStatus +
                 ", discountPercentage=" + discountPercentage +
                 '}';
+    }
+
+    public String getCustomerName() {
+        if(customerId!=null)
+            return customerId.getFullName();
+        else
+            return customerName;
     }
 
     @Override

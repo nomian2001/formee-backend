@@ -23,7 +23,11 @@ public class FormResponseDetails{
 
     public FormResponseDetails() {
     }
-
+    public void UpdateFormDetails(FormResponseDetails newDetails)
+    {
+        this.quantity = newDetails.getQuantity();
+        this.productOrderPrice = newDetails.getProductOrderPrice();
+    }
     @Override
     public String toString() {
         return "FormResponseDetails{" +

@@ -21,6 +21,7 @@ public class FormResponseDetailServiceImpl implements FormResponseDetailService 
 
     @Override
     public String updateFormResponseDetail(FormResponseDetails details) {
+        formResponseDetailsRepository.getById(details.getId()).UpdateFormDetails(details);
         return null;
     }
 }

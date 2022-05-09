@@ -47,6 +47,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     @Override
     public String createFormTemplate(FormTemplate formTemplate)
     {
+        formTemplateRepository.save(formTemplate);
         return null;
     }
 }

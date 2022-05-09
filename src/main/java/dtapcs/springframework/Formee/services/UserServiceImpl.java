@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.services;
 
 import dtapcs.springframework.Formee.domain.FormeeUser;
+
 import dtapcs.springframework.Formee.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String updateProfile(FormeeUser user) {
+        userRepository.findById(user.getUuid()).get().UpdateProfile(user);
         return null;
     }
 }

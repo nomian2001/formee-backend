@@ -14,6 +14,7 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public String createForm(Form form) {
+        formRepository.save(form);
         return null;
     }
 }

@@ -1,15 +1,15 @@
 package dtapcs.springframework.Formee.controllers;
 
 import dtapcs.springframework.Formee.api.model.FormResponseListDTO;
+import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.services.FormResponseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,14 +21,14 @@ public class FormResponseController {
     public FormResponseController(FormResponseService formResponseService) {
         this.formResponseService = formResponseService;
     }
-    @GetMapping
-    public ResponseEntity<FormResponseListDTO> getFormResponseList(int filterValue, int pageNumber, int rowPerPage)
+    @GetMapping("{formID}")
+    public ResponseEntity<FormResponseListDTO> getFormResponseList(@PathVariable UUID formID, @RequestParam List<OrderStatus> orderStatus, @RequestParam List<String> customerName, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam int pageNumber, @RequestParam int rowPerPage)
     {
         return new ResponseEntity<FormResponseListDTO>(
-                new FormResponseListDTO(formResponseService.getFormResponseList(filterValue,pageNumber,rowPerPage)), HttpStatus.OK);
+                new FormResponseListDTO(formResponseService.getFormResponseList(formID ,orderStatus,customerName,startDate,endDate,pageNumber,rowPerPage)), HttpStatus.OK);
     }
-    @PostMapping("export/{exportType}")
-    public ResponseEntity<String> exportFile(List<UUID> responseId, @PathVariable int exportType)
+    @PostMapping("export")
+    public ResponseEntity<String> exportFile(List<UUID> responseId, int exportType)
     {
         return new ResponseEntity<>(formResponseService.exportFile(responseId,exportType),HttpStatus.OK);
     }

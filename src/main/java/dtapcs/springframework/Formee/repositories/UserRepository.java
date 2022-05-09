@@ -1,9 +1,8 @@
 package dtapcs.springframework.Formee.repositories;
 
 import dtapcs.springframework.Formee.domain.FormeeUser;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
 
-public interface UserRepository extends CrudRepository<FormeeUser, String> {
+public interface UserRepository extends JpaRepository<FormeeUser, String> {
 }

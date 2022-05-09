@@ -52,7 +52,20 @@ public class FormeeUser {
         this.profilePicture = profilePicture;
         this.createAt = createAt;
     }
-
+    public void UpdateProfile(FormeeUser newUser)
+    {
+        this.userSettings = newUser.getUserSettings();
+        this.userHistories = newUser.getUserHistories();
+        this.formResponses = newUser.getFormResponses();
+        this.shops = newUser.getShops();
+        this.username = newUser.getUsername();
+        this.fullName = newUser.getFullName();
+        this.password = newUser.getPassword();
+        this.gender = newUser.getGender();
+        this.email = newUser.getEmail();
+        this.profilePicture = newUser.getProfilePicture();
+        this.createAt = createAt;
+    }
 
     @Override
     public String toString() {

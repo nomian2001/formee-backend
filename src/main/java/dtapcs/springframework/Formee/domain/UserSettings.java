@@ -32,6 +32,10 @@ public class UserSettings {
 
     public UserSettings() {
     }
+    public void UpdateSettings(UserSettings newSettings)
+    {
+        settingsJson = newSettings.getSettingsJson();
+    }
 
     @Override
     public String toString() {
