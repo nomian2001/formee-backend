@@ -1,33 +1,28 @@
 package dtapcs.springframework.Formee.controllers;
 
-import dtapcs.springframework.Formee.domain.FormResponseDetails;
-import dtapcs.springframework.Formee.domain.FormResponseDetailsId;
-import dtapcs.springframework.Formee.services.FormResponseDetailService;
+import dtapcs.springframework.Formee.entities.FormResponseDetails;
+import dtapcs.springframework.Formee.entities.FormResponseDetailsId;
+import dtapcs.springframework.Formee.services.inf.FormResponseDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("api/order-details/")
+@RestController
+@RequestMapping("/api/order-details")
 public class FormResponseDetailsController {
-    private final FormResponseDetailService formResponseDetailService;
+    @Autowired
+    private FormResponseDetailService formResponseDetailService;
 
-    public FormResponseDetailsController(FormResponseDetailService formResponseDetailService) {
-        this.formResponseDetailService = formResponseDetailService;
-    }
-    @GetMapping ("{id}")
-    public ResponseEntity<FormResponseDetails> getFormResponseDetail( @PathVariable FormResponseDetailsId id)
-    {
+    @GetMapping("/{id}")
+    public ResponseEntity<FormResponseDetails> getFormResponseDetail(@PathVariable FormResponseDetailsId id) {
         return new ResponseEntity<FormResponseDetails>(
                 formResponseDetailService.getFormResponseDetail(id), HttpStatus.OK);
     }
-    @PutMapping("update")
-    public ResponseEntity<String> updateFormResponseDetail(FormResponseDetails details)
-    {
-        return new ResponseEntity<>(formResponseDetailService.updateFormResponseDetail(details),HttpStatus.OK);
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateFormResponseDetail(FormResponseDetails details) {
+        return new ResponseEntity<>(formResponseDetailService.updateFormResponseDetail(details), HttpStatus.OK);
     }
 }

@@ -1,24 +1,22 @@
 package dtapcs.springframework.Formee.controllers;
 
-import dtapcs.springframework.Formee.domain.UserSettings;
-import dtapcs.springframework.Formee.services.UserSettingService;
+import dtapcs.springframework.Formee.entities.UserSettings;
+import dtapcs.springframework.Formee.services.inf.UserSettingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("api/user-setting/")
+@RestController
+@RequestMapping("/api/user-setting")
 public class UserSettingController {
-    private final UserSettingService userSettingService;
+    @Autowired
+    private UserSettingService userSettingService;
 
-    public UserSettingController(UserSettingService userSettingService) {
-        this.userSettingService = userSettingService;
-    }
-    @PutMapping("notifications")
-    public ResponseEntity<String> updateUserSetting(UserSettings settings)
-    {
+    @PutMapping("/notifications")
+    public ResponseEntity<String> updateUserSetting(UserSettings settings) {
         return new ResponseEntity<>(userSettingService.updateUserSetting(settings), HttpStatus.OK);
     }
 }

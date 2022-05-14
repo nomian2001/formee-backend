@@ -1,22 +1,20 @@
 package dtapcs.springframework.Formee.bootstrap;
 
-import dtapcs.springframework.Formee.domain.FormeeUser;
-
-import dtapcs.springframework.Formee.repositories.UserHistoryRepository;
-import dtapcs.springframework.Formee.repositories.UserRepository;
-import dtapcs.springframework.Formee.repositories.UserSettingsRepository;
+import dtapcs.springframework.Formee.repositories.inf.UserHistoryRepo;
+import dtapcs.springframework.Formee.repositories.inf.UserRepo;
+import dtapcs.springframework.Formee.repositories.inf.UserSettingsRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BootstrapData implements CommandLineRunner {
-    private final UserHistoryRepository userHistoryRepository;
-    private final UserRepository userRepository;
-    private final UserSettingsRepository userSettingsRepository;
-
-    public BootstrapData(UserHistoryRepository userHistoryRepository, UserRepository userRepository, UserSettingsRepository userSettingsRepository) {
-        this.userHistoryRepository = userHistoryRepository;
-        this.userRepository = userRepository;
-        this.userSettingsRepository = userSettingsRepository;
-    }
+    @Autowired
+    private UserHistoryRepo userHistoryRepo;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private UserSettingsRepo userSettingsRepo;
 
     @Override
     public void run(String... args) throws Exception {
