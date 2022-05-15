@@ -6,6 +6,7 @@ import dtapcs.springframework.Formee.services.inf.FormResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
+@PreAuthorize("hasRole('USER')")
 public class FormResponseController {
     @Autowired
     private FormResponseService formResponseService;

@@ -5,12 +5,14 @@ import dtapcs.springframework.Formee.services.inf.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/forms")
+@PreAuthorize("hasRole('USER')")
 public class FormController {
     @Autowired
     private FormService formService;
