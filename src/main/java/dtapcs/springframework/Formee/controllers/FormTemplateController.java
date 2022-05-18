@@ -40,7 +40,7 @@ public class FormTemplateController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createFormTemplate(FormTemplate formTemplate) {
+    public ResponseEntity<String> createFormTemplate(@RequestBody FormTemplate formTemplate) {
         return new ResponseEntity<>(
                 formTemplateService.createFormTemplate(formTemplate), HttpStatus.OK
         );

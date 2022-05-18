@@ -17,16 +17,15 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/authentication")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LoginController {
     @Autowired
     private UserRepo userRepo;
     @Autowired
     private RoleRepo roleRepo;
 
-    @CrossOrigin
     @PostMapping("/login")
     FormeeUser VerifyLogin(@RequestHeader(value = "token") String idToken) throws Exception {
-        System.out.println(idToken);
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdTokenAsync(idToken).get();
         final String uid = decodedToken.getUid();
         Optional<FormeeUser> user = userRepo.findById(uid);
@@ -38,7 +37,7 @@ public class LoginController {
             newUser.setEmail(userRecord.getEmail());
             newUser.setFullName(userRecord.getDisplayName());
             newUser.setProfilePicture(userRecord.getPhotoUrl());
-            newUser.setUsername("Formee user");
+            newUser.setUsername(userRecord.getEmail());
             Set<Role> roles = new HashSet<>();
             roles.add(roleRepo.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("Error: Role is not found.")));
             newUser.setRoles(roles);

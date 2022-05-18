@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class FormTemplate {
+public class FormTemplate extends Auditable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -27,6 +27,7 @@ public class FormTemplate {
 
     private String description;
 
+    @Column(name = "layoutJson", columnDefinition = "TEXT")
     private String layoutJson;
 
 }

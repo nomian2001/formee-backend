@@ -3,27 +3,26 @@ package dtapcs.springframework.Formee.entities;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Entity
-public class FormeeUser {
+public class FormeeUser extends Auditable {
     @Id
     @Column(updatable = false, nullable = false)
     private String uuid;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "userId")
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "userId")
     private UserSettings userSettings;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
     private Set<UserHistory> userHistories;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customerId")
     private Set<FormResponse> formResponses;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ownerId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ownerId")
     private Set<Shop> shops;
 
     private String username;
@@ -38,10 +37,8 @@ public class FormeeUser {
 
     private String profilePicture;
 
-    private LocalDateTime createAt;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_roles",
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -54,7 +51,7 @@ public class FormeeUser {
         this.uuid = uuid;
     }
 
-    public FormeeUser(UserSettings userSettings, Set<UserHistory> userHistories, Set<FormResponse> formResponses, Set<Shop> shops, String username, String fullName, String password, int gender, String email, String profilePicture, LocalDateTime createAt) {
+    public FormeeUser(UserSettings userSettings, Set<UserHistory> userHistories, Set<FormResponse> formResponses, Set<Shop> shops, String username, String fullName, String password, int gender, String email, String profilePicture) {
         this.userSettings = userSettings;
         this.userHistories = userHistories;
         this.formResponses = formResponses;
@@ -65,7 +62,6 @@ public class FormeeUser {
         this.gender = gender;
         this.email = email;
         this.profilePicture = profilePicture;
-        this.createAt = createAt;
     }
 
     public void UpdateProfile(FormeeUser newUser) {
@@ -79,6 +75,5 @@ public class FormeeUser {
         this.gender = newUser.getGender();
         this.email = newUser.getEmail();
         this.profilePicture = newUser.getProfilePicture();
-        this.createAt = createAt;
     }
 }

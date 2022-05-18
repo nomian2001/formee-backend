@@ -3,8 +3,7 @@ package dtapcs.springframework.Formee.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,20 +20,21 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointGoogle unauthorizedHandler;
+
     @Bean
     public GoogleTokenFilter authenticationJwtTokenFilter() {
         return new GoogleTokenFilter();
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http.cors().and().csrf().disable().httpBasic().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/authentication/**").permitAll()
+                .addFilterBefore(authenticationJwtTokenFilter(), RememberMeAuthenticationFilter.class)
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/api/authentication/**").permitAll()
                 .antMatchers("/api/test/**").permitAll();
 //                .anyRequest().authenticated();
-        http.addFilterBefore(authenticationJwtTokenFilter(), RememberMeAuthenticationFilter.class);
+//        http.addFilterBefore(authenticationJwtTokenFilter(), RememberMeAuthenticationFilter.class);
     }
 }
