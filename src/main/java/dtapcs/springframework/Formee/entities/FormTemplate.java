@@ -23,6 +23,7 @@ public class FormTemplate extends Auditable {
 
     private String name;
 
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 
     private String description;
