@@ -25,6 +25,7 @@ public class FormResponseDetailsController {
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/update")
     public ResponseEntity<String> updateFormResponseDetail(FormResponseDetails details) {
+        //check user có giống user của ng tạo form k rồi send mail
         return new ResponseEntity<>(formResponseDetailService.updateFormResponseDetail(details), HttpStatus.OK);
     }
 }

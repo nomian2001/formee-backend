@@ -1,0 +1,10 @@
+{
+  "Order-Notification": {
+    "title": "New order notifications",
+    "content": "You receive a new order"
+  },
+  "Order-Change-Notification": {
+    "title": "Order change notifications",
+    "content": "Someone has changed their order"
+  }
+}
