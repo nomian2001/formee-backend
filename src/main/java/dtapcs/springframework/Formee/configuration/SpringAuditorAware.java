@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.configuration;
 
+import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,13 @@ public class SpringAuditorAware implements AuditorAware<String> {
         if (authentication == null || !authentication.isAuthenticated()) {
             return Optional.empty();
         }
-        return Optional.ofNullable(authentication.getPrincipal().toString());
+        Object principal = authentication.getPrincipal();
+        if (principal.equals("anonymousUser")) {
+            return Optional.ofNullable(principal.toString());
+        }
+        else {
+            UserDetails userDetails = (UserDetails) principal;
+            return Optional.ofNullable(userDetails.getUsername());
+        }
     }
 }

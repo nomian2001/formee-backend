@@ -17,8 +17,8 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/authentication")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
-public class LoginController {
+@CrossOrigin(origins = "#{'${formee.url}'}")
+public class LoginController extends BaseController {
     @Autowired
     private UserRepo userRepo;
     @Autowired

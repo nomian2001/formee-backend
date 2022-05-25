@@ -14,9 +14,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/orders")
 @PreAuthorize("hasRole('USER')")
-public class FormResponseController {
+@CrossOrigin(origins = "#{'${formee.url}'}")
+@RequestMapping("/api/orders")
+public class FormResponseController extends BaseController {
     @Autowired
     private FormResponseService formResponseService;
 
@@ -30,7 +31,7 @@ public class FormResponseController {
                                                                    @RequestParam int rowPerPage) {
         return new ResponseEntity<FormResponseListDTO>(
                 new FormResponseListDTO(formResponseService.getFormResponseList(formID, orderStatus, customerName,
-                                        startDate, endDate, pageNumber, rowPerPage)), HttpStatus.OK);
+                        startDate, endDate, pageNumber, rowPerPage)), HttpStatus.OK);
     }
 
     @PostMapping("/export")

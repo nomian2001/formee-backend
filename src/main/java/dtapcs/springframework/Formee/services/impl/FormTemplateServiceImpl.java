@@ -24,6 +24,20 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     private FormTemplateRepo formTemplateRepo;
 
     @Override
+    public List<FormTemplateSummaryDTO> getRecentTemplates(String username) {
+        List<Object[]> responses = formTemplateRepo.getRecentResponses(username);
+        List<String> recentForms = responses
+                .stream()
+                .map(response -> (String) response[0])
+                .collect(Collectors.toList());
+        return formTemplateRepo.findAll()
+                .stream()
+                .filter(formTemplate -> recentForms.contains(formTemplate.getUuid().toString()))
+                .map(formTemplateSummaryMapper::formTemplateToFormTemplateSummaryDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<FormTemplateSummaryDTO> getAllFormTemplateSummary() {
         return formTemplateRepo.findAll()
                 .stream()
@@ -45,8 +59,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     @Override
-    public String createFormTemplate(FormTemplate formTemplate) {
+    public void createFormTemplate(FormTemplate formTemplate) {
         formTemplateRepo.save(formTemplate);
-        return null;
     }
 }

@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FormTemplateService {
+    List<FormTemplateSummaryDTO> getRecentTemplates(String username);
+
     List<FormTemplateSummaryDTO> getAllFormTemplateSummary();
 
     FormTemplate getFormTemplateByID(UUID id);
 
     List<FormTemplateFullDTO> getAllFormTemplateFull();
 
-    String createFormTemplate(FormTemplate formTemplate);
+    void createFormTemplate(FormTemplate formTemplate);
 }

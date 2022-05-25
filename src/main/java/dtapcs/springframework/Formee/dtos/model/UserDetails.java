@@ -14,13 +14,16 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDetails {
     private String id;
+    private String username;
     private Collection<? extends GrantedAuthority> authorities;
+
     public static UserDetails build(FormeeUser user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
         return new UserDetails(
                 user.getUuid(),
+                user.getUsername(),
                 authorities);
     }
 }

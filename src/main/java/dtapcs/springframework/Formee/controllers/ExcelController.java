@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-//@CrossOrigin("http://localhost:8081")
 @Controller
 @RequestMapping("/api/excel")
-public class ExcelController {
+@CrossOrigin(origins = "#{'${formee.url}'}")
+public class ExcelController extends BaseController {
     @Autowired
     ExcelService fileService;
+
     @GetMapping("/download")
     public ResponseEntity<Resource> getFile() {
         String filename = "formResponse.xlsx";
