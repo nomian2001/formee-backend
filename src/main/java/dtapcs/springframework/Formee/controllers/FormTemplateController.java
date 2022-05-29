@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @PreAuthorize("hasRole('USER')")
-@CrossOrigin(origins = "#{'${formee.url}'}")
+//@CrossOrigin(origins = "#{'${formee.url}'}")
 @RequestMapping(value = "/api/template", produces = MediaType.APPLICATION_JSON_VALUE)
 public class FormTemplateController extends BaseController {
 

@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @PreAuthorize("hasRole('USER')")
-@CrossOrigin(origins = "#{'${formee.url}'}")
+//@CrossOrigin(origins = "#{'${formee.url}'}")
 @RequestMapping("/api/orders")
 public class FormResponseController extends BaseController {
     @Autowired

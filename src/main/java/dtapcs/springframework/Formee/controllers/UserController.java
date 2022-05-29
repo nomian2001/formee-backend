@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user")
 @PreAuthorize("hasRole('USER')")
-@CrossOrigin(origins = "#{'${formee.url}'}")
+//@CrossOrigin(origins = "#{'${formee.url}'}")
 public class UserController extends BaseController {
     @Autowired
     private UserService userService;
