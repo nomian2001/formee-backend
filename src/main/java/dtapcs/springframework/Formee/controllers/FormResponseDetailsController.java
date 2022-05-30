@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/order-details")
-//@CrossOrigin(origins = "#{'${formee.url}'}")
+@CrossOrigin(origins = "#{'${formee.url}'}")
 public class FormResponseDetailsController extends BaseController {
     @Autowired
     private FormResponseDetailService formResponseDetailService;

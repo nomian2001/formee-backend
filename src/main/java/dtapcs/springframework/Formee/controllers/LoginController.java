@@ -18,7 +18,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/authentication")
 //@CrossOrigin(origins = "*",allowedHeaders = "*")
-//@CrossOrigin(origins = "#{'${formee.url}'}")
+@CrossOrigin(origins = "#{'${formee.url}'}")
 public class LoginController extends BaseController {
     @Autowired
     private UserRepo userRepo;

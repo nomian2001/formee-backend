@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/excel")
-//@CrossOrigin(origins = "#{'${formee.url}'}")
+@CrossOrigin(origins = "#{'${formee.url}'}")
 public class ExcelController extends BaseController {
     @Autowired
     ExcelService fileService;
