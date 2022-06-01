@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class Form {
+public class Form extends Auditable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "formId")
     Set<FormResponse> formResponses;
     @Id
@@ -25,5 +25,19 @@ public class Form {
     @JoinColumn(name = "shopId")
     private Shop shopId;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "userId")
+//    private FormeeUser userId;
+
+    private String name;
+
+    private String userId;
+
+    private String templateId;
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "formId")
+//    Set<Product> products;
+
+    @Column(name = "layoutJson", columnDefinition = "TEXT")
     private String layoutJson;
 }

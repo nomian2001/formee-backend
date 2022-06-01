@@ -18,9 +18,9 @@ public class ShopSettings {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shopId")
-    private Shop shopId;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "shopId")
+//    private Shop shopId;
 
     private String customizationJson;
 
