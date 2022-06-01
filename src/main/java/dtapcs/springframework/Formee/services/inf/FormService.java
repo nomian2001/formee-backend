@@ -12,5 +12,5 @@ public interface FormService {
 
     Optional<Form> getFormById(UUID formId);
 
-    List<FormTemplateSummaryDTO> getRecentForms(String userId);
+    List<Form> getRecentForms(String userId);
 }

@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface FormOrderRepo extends JpaRepository<FormOrder, UUID> {
-    List<FormOrder> findAllByCreatedBy(String userName);
+    List<FormOrder> findAllByFormId(String formId);
 }

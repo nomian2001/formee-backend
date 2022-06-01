@@ -37,13 +37,7 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public List<FormTemplateSummaryDTO> getRecentForms(String userId) {
-        String username = userRepo.getUsernameById(userId);
-        List<Object[]> responses = formRepo.getRecentResponses(username);
-        List<String> recentFormIds = responses
-                .stream()
-                .map(response -> (String) response[0])
-                .collect(Collectors.toList());
-        return null;
+    public List<Form> getRecentForms(String userId) {
+        return formRepo.getRecentForms(userId);
     }
 }

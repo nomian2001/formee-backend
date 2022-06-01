@@ -22,5 +22,6 @@ public class FormOrder extends Auditable {
 
     private String formId;
 
+    @Column(name = "response", columnDefinition = "TEXT")
     private String response;
 }

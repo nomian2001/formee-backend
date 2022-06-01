@@ -34,9 +34,9 @@ public class FormOrderController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{userName}")
-    public ResponseEntity findAllByUsername(@PathVariable String userName) {
-        List<FormOrder> result = formOrderService.findAllByUserName(userName);
+    @GetMapping("/{formId}")
+    public ResponseEntity findAllByFormId(@PathVariable String formId) {
+        List<FormOrder> result = formOrderService.findAllByFormId(formId);
         DataResponse response = DataResponse.ok()
                 .withResult(result)
                 .withMessage(super.getMessage("message.common.success"))

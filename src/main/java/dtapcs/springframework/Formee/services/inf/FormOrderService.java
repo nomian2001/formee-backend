@@ -10,5 +10,5 @@ public interface FormOrderService {
 
     FormOrder getById(UUID id);
 
-    List<FormOrder> findAllByUserName(String userId);
+    List<FormOrder> findAllByFormId(String formId);
 }

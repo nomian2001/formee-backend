@@ -53,7 +53,7 @@ public class FormController extends BaseController {
 
     @GetMapping("/recent/{userId}")
     public ResponseEntity getRecentForms(@PathVariable String userId) {
-        List<FormTemplateSummaryDTO> result = formService.getRecentForms(userId);
+        List<Form> result = formService.getRecentForms(userId);
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
                 .withResult(result)
