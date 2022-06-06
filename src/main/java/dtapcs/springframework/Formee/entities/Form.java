@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.entities;
 
+import dtapcs.springframework.Formee.enums.ResponsePermission;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -34,7 +35,7 @@ public class Form extends Auditable {
     private String userId;
 
     private String templateId;
-
+    private ResponsePermission responsePermission;
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "formId")
 //    Set<Product> products;
 

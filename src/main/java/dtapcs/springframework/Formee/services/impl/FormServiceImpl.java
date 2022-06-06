@@ -3,6 +3,7 @@ package dtapcs.springframework.Formee.services.impl;
 import dtapcs.springframework.Formee.dtos.mapper.FormTemplateSummaryMapper;
 import dtapcs.springframework.Formee.dtos.model.FormTemplateSummaryDTO;
 import dtapcs.springframework.Formee.entities.Form;
+import dtapcs.springframework.Formee.enums.ResponsePermission;
 import dtapcs.springframework.Formee.repositories.inf.FormRepo;
 import dtapcs.springframework.Formee.repositories.inf.FormTemplateRepo;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
@@ -40,4 +41,21 @@ public class FormServiceImpl implements FormService {
     public List<Form> getRecentForms(String userId) {
         return formRepo.getRecentForms(userId);
     }
+
+    @Override
+    public Boolean checkFormPermission(String userId, UUID formID){
+        Form check = formRepo.getById(formID);
+        if(check!=null){
+            if(check.getResponsePermission() == ResponsePermission.AllowAll){
+                return true;
+            }
+            else{
+                return userId==check.getUserId();
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
 }

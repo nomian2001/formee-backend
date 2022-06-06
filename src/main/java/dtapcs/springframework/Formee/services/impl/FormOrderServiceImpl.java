@@ -38,4 +38,14 @@ public class FormOrderServiceImpl implements FormOrderService {
     public List<FormOrder> findAllByFormId(String formId) {
         return formOrderRepo.findAllByFormId(formId);
     }
+    @Override
+    public FormOrder updateOrder(FormOrder updatedOrder)
+    {
+        Optional<FormOrder> check = formOrderRepo.findById(updatedOrder.getUuid());
+        if(check.isPresent())
+        {
+            return formOrderRepo.save(updatedOrder);
+        }
+        return null; //không tìm thấy form cần update
+    }
 }

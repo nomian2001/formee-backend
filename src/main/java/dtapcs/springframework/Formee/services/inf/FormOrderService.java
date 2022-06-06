@@ -11,4 +11,5 @@ public interface FormOrderService {
     FormOrder getById(UUID id);
 
     List<FormOrder> findAllByFormId(String formId);
+    FormOrder updateOrder(FormOrder updatedOrder);
 }
