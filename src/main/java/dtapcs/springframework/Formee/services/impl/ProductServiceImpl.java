@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -21,5 +22,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllByFormId(String formId) {
         return productRepo.findAllByFormId(formId);
+    }
+    @Override
+    public void setImageName(String name, UUID productId){
+        Product product = productRepo.getById(productId);
+        product.setImageName(name);
+        productRepo.save(product);
     }
 }
