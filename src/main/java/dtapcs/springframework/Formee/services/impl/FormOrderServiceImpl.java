@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.services.impl;
 
+import com.google.gson.Gson;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,9 +41,7 @@ public class FormOrderServiceImpl implements FormOrderService {
     public List<FormOrder> filterOrder(UUID formID, List<OrderStatus> orderStatus, LocalDateTime startDate, LocalDateTime endDate){
         Set<FormOrder> orderList = formRepo.findById(formID).get().getFormOrders();
         Stream<FormOrder> orderStream = orderList.stream();
-        if (orderStatus != null) {
-            orderStream = orderStream.filter(order -> orderStatus.contains(order.getResponse()));
-        }
+
         if (startDate != null) {
             orderStream = orderStream.filter(order -> order.getCreatedDate().isAfter(startDate));
         }
@@ -53,6 +49,16 @@ public class FormOrderServiceImpl implements FormOrderService {
             orderStream = orderStream.filter(order -> order.getCreatedDate().isBefore(startDate));
         }
         List<FormOrder> orderRes = orderStream.collect(Collectors.toList());
+        if (orderStatus != null) {
+            List<FormOrder> tempRes = new ArrayList<>();
+            for(FormOrder order: orderRes){
+                List<String> responseField = new Gson().fromJson(order.getResponse(), ArrayList.class);
+                if(orderStatus.contains(responseField.get(4))){ //field 4
+                    tempRes.add(order);
+                }
+            }
+            orderRes = tempRes;
+        }
         return orderRes;
     }
     @Override
