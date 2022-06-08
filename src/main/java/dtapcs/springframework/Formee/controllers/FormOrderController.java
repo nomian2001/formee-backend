@@ -30,7 +30,7 @@ public class FormOrderController extends BaseController {
     private FormService formService;
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
-    public ResponseEntity createOrder(@RequestBody FormOrder order) {
+    public ResponseEntity createOrder(@RequestBody FormOrderDTO order) {
         FormOrder result = formOrderService.createOrder(order);
         DataResponse response = DataResponse.ok()
                 .withResult(result)
@@ -72,7 +72,7 @@ public class FormOrderController extends BaseController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/update")
-    public ResponseEntity updateOrder(@RequestBody FormOrder order, Principal principal)
+    public ResponseEntity updateOrder(@RequestBody FormOrderDTO order, Principal principal)
     {
         UserDetails loginUser = (UserDetails) principal;
         if(formService.checkFormPermission(loginUser.getId(),order.getFormId()))

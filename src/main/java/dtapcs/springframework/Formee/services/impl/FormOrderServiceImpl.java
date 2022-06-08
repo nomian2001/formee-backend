@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.services.impl;
 
 import com.google.gson.Gson;
+import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
@@ -23,17 +24,21 @@ public class FormOrderServiceImpl implements FormOrderService {
     FormOrderRepo formOrderRepo;
 
     @Override
-    public FormOrder createOrder(FormOrder order) {
-        Form form = order.getFormId();
-        if (form!=null) {
-            //Form form = check.get();
+    public FormOrder createOrder(FormOrderDTO dto) {
+
+        Optional<Form> check = formRepo.findById(dto.getFormId());
+        if(check.isPresent())
+        {
+            Form form = check.get();
 
             formRepo.save(form); // new last modified date
-            if(order.getOrderName()==null || order.getOrderName()=="")
+            if(dto.getOrderName()==null || dto.getOrderName()=="")
             {
                 String orderName = form.getName() + " 1";
             }
-            return formOrderRepo.save(order);
+            FormOrder newOrder = new FormOrder(dto, form);
+
+            return formOrderRepo.save(newOrder);
         }
         return null;
     }
@@ -71,12 +76,14 @@ public class FormOrderServiceImpl implements FormOrderService {
         return formOrderRepo.findAllByFormId(formId);
     }
     @Override
-    public FormOrder updateOrder(FormOrder updatedOrder)
+    public FormOrder updateOrder(FormOrderDTO dto)
     {
-        Optional<FormOrder> check = formOrderRepo.findById(updatedOrder.getUuid());
+        Optional<FormOrder> check = formOrderRepo.findById(dto.getUuid());
         if(check.isPresent())
         {
-            return formOrderRepo.save(updatedOrder);
+            FormOrder currentOrder = check.get();
+            currentOrder.UpdateFormOrder(dto);
+            return formOrderRepo.save(currentOrder);
         }
         return null; //không tìm thấy form cần update
     }

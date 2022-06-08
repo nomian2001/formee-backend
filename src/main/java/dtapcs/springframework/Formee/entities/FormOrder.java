@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,4 +29,24 @@ public class FormOrder extends Auditable {
 
     @Column(name = "response", columnDefinition = "TEXT")
     private String response;
+    public FormOrder(){}
+    public FormOrder(FormOrderDTO dto, Form form)
+    {
+        orderName = dto.getOrderName();
+        formId = form;
+        response = dto.getResponse();
+        createdBy = dto.getCreatedBy();
+        createdDate = dto.getCreatedDate();
+        lastModifiedBy = dto.getLastModifiedBy();
+        lastModifiedDate = dto.getLastModifiedDate();
+    }
+    public void UpdateFormOrder(FormOrderDTO dto)
+    {
+        orderName = dto.getOrderName();
+        response = dto.getResponse();
+        createdBy = dto.getCreatedBy();
+        createdDate = dto.getCreatedDate();
+        lastModifiedBy = dto.getLastModifiedBy();
+        lastModifiedDate = dto.getLastModifiedDate();
+    }
 }
