@@ -36,7 +36,8 @@ public class FormOrderServiceImpl implements FormOrderService {
             {
                 String orderName = form.getName() + " 1";
             }
-            FormOrder newOrder = new FormOrder(dto, form);
+            FormOrder newOrder = new FormOrder();
+            newOrder.UpdateFormOrder(dto,form);
 
             return formOrderRepo.save(newOrder);
         }
