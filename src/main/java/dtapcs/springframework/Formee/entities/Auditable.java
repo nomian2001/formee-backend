@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -20,13 +21,13 @@ public class Auditable {
 
     @Column(updatable = false)
     @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Date createdDate;
+    //@Temporal(TemporalType.TIMESTAMP)
+    protected LocalDateTime createdDate;
 
     @LastModifiedBy
     protected String lastModifiedBy;
 
     @LastModifiedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Date lastModifiedDate;
+    //@Temporal(TemporalType.TIMESTAMP)
+    protected LocalDateTime lastModifiedDate;
 }

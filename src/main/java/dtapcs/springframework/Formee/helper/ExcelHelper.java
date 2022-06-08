@@ -1,6 +1,6 @@
 package dtapcs.springframework.Formee.helper;
 
-import dtapcs.springframework.Formee.entities.FormResponse;
+import dtapcs.springframework.Formee.entities.FormOrder;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,7 +13,7 @@ public class ExcelHelper {
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String[] HEADERs = { "Id", "Customer Name", "Submit Status", "Order Status", "Payment Status", "Discount Percentage" };
     static String SHEET = "FormResponseSheet";
-    public static ByteArrayInputStream FormResponseToExcel(List<FormResponse> formResponseList) {
+    public static ByteArrayInputStream FormResponseToExcel(List<FormOrder> formResponseList) {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
             Sheet sheet = workbook.createSheet(SHEET);
             // Header
@@ -23,14 +23,14 @@ public class ExcelHelper {
                 cell.setCellValue(HEADERs[col]);
             }
             int rowIdx = 1;
-            for (FormResponse response : formResponseList) {
+            for (FormOrder response : formResponseList) {
                 Row row = sheet.createRow(rowIdx++);
-                row.createCell(0).setCellValue((RichTextString) response.getFormId());
-                row.createCell(1).setCellValue(response.getCustomerName()); //customer name
-                row.createCell(2).setCellValue(response.getSubmitStatus().toString()); //Submit Status
-                row.createCell(3).setCellValue(response.getOrderStatus().toString()); //Order Status
-                row.createCell(4).setCellValue(response.getPaymentStatus().toString()); //Payment Status
-                row.createCell(5).setCellValue(response.getDiscountPercentage()); //Discount Percentage
+                row.createCell(0).setCellValue( response.getFormId().toString());
+                //row.createCell(1).setCellValue(response.getCustomerName()); //customer name
+                row.createCell(2).setCellValue(response.getResponse());//Submit Status
+                //row.createCell(3).setCellValue(response.getOrderStatus().toString()); //Order Status
+                //row.createCell(4).setCellValue(response.getPaymentStatus().toString()); //Payment Status
+                //row.createCell(5).setCellValue(response.getDiscountPercentage()); //Discount Percentage
             }
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());

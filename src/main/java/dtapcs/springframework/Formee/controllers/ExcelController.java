@@ -20,9 +20,9 @@ public class ExcelController extends BaseController {
     ExcelService fileService;
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> getFile() {
+    public ResponseEntity<Resource> getFile(String formId) {
         String filename = "formResponse.xlsx";
-        InputStreamResource file = new InputStreamResource(fileService.load());
+        InputStreamResource file = new InputStreamResource(fileService.load(formId));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))

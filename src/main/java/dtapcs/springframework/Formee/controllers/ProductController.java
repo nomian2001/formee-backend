@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-//@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasRole('USER')")
 @CrossOrigin(origins = "#{'${formee.url}'}")
 @RequestMapping(value = "/api/product", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProductController extends BaseController {

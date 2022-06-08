@@ -20,7 +20,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId")
-    private FormResponse orderId;
+    private FormOrder orderId;
 
     private Boolean fromSeller;
 

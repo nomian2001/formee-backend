@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 public class Form extends Auditable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "formId")
-    Set<FormResponse> formResponses;
+    Set<FormOrder> formOrders;
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(

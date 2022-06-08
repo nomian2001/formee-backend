@@ -22,7 +22,7 @@ public class OrderTracking {
 
     @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name="orderId")
-    private FormResponse orderId;
+    private FormOrder orderId;
 
     private String permissionJson;
 

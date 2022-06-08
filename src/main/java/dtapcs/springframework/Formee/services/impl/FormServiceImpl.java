@@ -43,14 +43,13 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public Boolean checkFormPermission(String userId, UUID formID){
-        Form check = formRepo.getById(formID);
-        if(check!=null){
-            if(check.getResponsePermission() == ResponsePermission.AllowAll){
+    public Boolean checkFormPermission(String userId, Form form){
+        if(form!=null){
+            if(form.getResponsePermission() == ResponsePermission.AllowAll){
                 return true;
             }
             else{
-                return userId==check.getUserId();
+                return userId==form.getUserId();
             }
         }
         else {

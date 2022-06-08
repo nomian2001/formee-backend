@@ -3,6 +3,7 @@ package dtapcs.springframework.Formee.controllers;
 import dtapcs.springframework.Formee.dtos.model.*;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.entities.FormTemplate;
+import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
 import dtapcs.springframework.Formee.services.inf.FormTemplateService;
@@ -14,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,9 +39,22 @@ public class FormOrderController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/duplicate/{orderId}")
+    public ResponseEntity duplicateOrder(@PathVariable UUID orderId){
+        FormOrder result = formOrderService.duplicateOrder(orderId);
+        DataResponse response = DataResponse.ok()
+                .withMessage(super.getMessage("message.common.success"))
+                .withResult(result)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{formId}")
-    public ResponseEntity findAllByFormId(@PathVariable String formId) {
-        List<FormOrder> result = formOrderService.findAllByFormId(formId);
+    public ResponseEntity findAllByFormId(@PathVariable UUID formId,@RequestParam List<OrderStatus> orderStatus,
+                                          @RequestParam LocalDateTime startDate,
+                                          @RequestParam LocalDateTime endDate) {
+        List<FormOrder> result = formOrderService.filterOrder(formId,orderStatus,startDate,endDate);
         DataResponse response = DataResponse.ok()
                 .withResult(result)
                 .withMessage(super.getMessage("message.common.success"))
@@ -47,7 +62,6 @@ public class FormOrderController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/response/{id}")
     public ResponseEntity getFormTemplateByID(@PathVariable UUID id) {
         FormOrder result = formOrderService.getById(id);
@@ -61,7 +75,7 @@ public class FormOrderController extends BaseController {
     public ResponseEntity updateOrder(@RequestBody FormOrder order, Principal principal)
     {
         UserDetails loginUser = (UserDetails) principal;
-        if(formService.checkFormPermission(loginUser.getId(),UUID.fromString(order.getFormId())))
+        if(formService.checkFormPermission(loginUser.getId(),order.getFormId()))
         {
             FormOrder result = formOrderService.updateOrder(order);
             if(result==null)

@@ -19,8 +19,12 @@ public class FormOrder extends Auditable {
     )
     @Column(updatable = false, nullable = false)
     private UUID uuid;
+    private String orderName;
 
-    private String formId;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="formId")
+    private Form formId;
+
 
     @Column(name = "response", columnDefinition = "TEXT")
     private String response;
