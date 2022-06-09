@@ -3,6 +3,7 @@ package dtapcs.springframework.Formee.controllers;
 import dtapcs.springframework.Formee.dtos.model.*;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.entities.FormTemplate;
+import dtapcs.springframework.Formee.dtos.mapper.FormOrderMapper;
 import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
@@ -32,8 +33,9 @@ public class FormOrderController extends BaseController {
     @PostMapping("/create")
     public ResponseEntity createOrder(@RequestBody FormOrderDTO order) {
         FormOrder result = formOrderService.createOrder(order);
+        FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
         DataResponse response = DataResponse.ok()
-                .withResult(result)
+                .withResult(resultDTO)
                 .withMessage(super.getMessage("message.common.success"))
                 .build();
         return ResponseEntity.ok(response);
@@ -43,9 +45,10 @@ public class FormOrderController extends BaseController {
     @GetMapping("/duplicate/{orderId}")
     public ResponseEntity duplicateOrder(@PathVariable UUID orderId){
         FormOrder result = formOrderService.duplicateOrder(orderId);
+        FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
-                .withResult(result)
+                .withResult(resultDTO)
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -65,9 +68,10 @@ public class FormOrderController extends BaseController {
     @GetMapping("/response/{id}")
     public ResponseEntity getFormTemplateByID(@PathVariable UUID id) {
         FormOrder result = formOrderService.getById(id);
+        FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
-                .withResult(result)
+                .withResult(resultDTO)
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -78,6 +82,7 @@ public class FormOrderController extends BaseController {
         if(formService.checkFormPermission(loginUser.getId(),order.getFormId()))
         {
             FormOrder result = formOrderService.updateOrder(order);
+            FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
             if(result==null)
             {
                 DataResponse response = DataResponse.badRequest()
@@ -89,7 +94,7 @@ public class FormOrderController extends BaseController {
             {
                 DataResponse response = DataResponse.ok()
                         .withMessage(super.getMessage("message.common.success"))
-                        .withResult(result)
+                        .withResult(resultDTO)
                         .build();
                 return ResponseEntity.ok(response);
             }

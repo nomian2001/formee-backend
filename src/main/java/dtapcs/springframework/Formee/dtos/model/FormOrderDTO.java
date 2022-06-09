@@ -6,10 +6,10 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 public class FormOrderDTO extends Auditable {
     private UUID uuid;
     private String orderName;
     private UUID formId;
     private String response;
+
 }
