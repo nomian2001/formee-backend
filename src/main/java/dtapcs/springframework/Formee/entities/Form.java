@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,4 +42,8 @@ public class Form extends Auditable {
 
     @Column(name = "layoutJson", columnDefinition = "TEXT")
     private String layoutJson;
+    public void InitFormList()
+    {
+        formOrders = new HashSet<>();
+    }
 }

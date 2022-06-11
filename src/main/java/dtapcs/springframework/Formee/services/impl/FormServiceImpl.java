@@ -29,6 +29,7 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public Form createForm(Form form) {
+        form.InitFormList();
         return formRepo.save(form);
     }
 
