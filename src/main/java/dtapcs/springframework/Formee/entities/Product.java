@@ -27,6 +27,7 @@ public class Product extends Auditable {
 //    @JoinColumn(name = "formId")
 //    private Form formId;
     private String imageName;
+
     private String formId;
 
     private String userId;

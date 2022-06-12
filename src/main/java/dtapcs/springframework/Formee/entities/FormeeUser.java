@@ -19,7 +19,6 @@ public class FormeeUser extends Auditable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
     private Set<UserHistory> userHistories;
 
-
 //    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ownerId")
 //    private Set<Shop> shops;
 

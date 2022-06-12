@@ -14,7 +14,10 @@ public interface FormOrderService {
     FormOrder getById(UUID id);
 
     List<FormOrder> findAllByFormId(String formId);
+
     FormOrder updateOrder(FormOrderDTO dto);
+
     FormOrder duplicateOrder(UUID formOrderId);
+
     List<FormOrder> filterOrder(UUID formID, List<OrderStatus> orderStatus, LocalDateTime startDate, LocalDateTime endDate);
 }

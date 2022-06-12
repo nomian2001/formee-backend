@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class Comment {
+public class Comment extends Auditable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -18,11 +18,9 @@ public class Comment {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "orderId")
     private FormOrder orderId;
 
-    private Boolean fromSeller;
-
-    private String parentCommentId;
+    private String message;
 }

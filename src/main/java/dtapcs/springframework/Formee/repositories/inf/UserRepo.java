@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepo extends JpaRepository<FormeeUser, String> {
-    @Query(nativeQuery = true, value = "SELECT username FROM formee_user WHERE uuid = :userId")
-    String getUsernameById(String userId);
+    @Query(nativeQuery = true, value = "SELECT email FROM formee_user WHERE uuid = :userId")
+    String getEmailByUserId(String userId);
 }

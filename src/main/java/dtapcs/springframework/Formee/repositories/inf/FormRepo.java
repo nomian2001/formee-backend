@@ -16,4 +16,6 @@ public interface FormRepo extends JpaRepository<Form, UUID> {
                     "WHERE user_id = :userId " +
                     "ORDER BY last_modified_date DESC LIMIT 6")
     List<Form> getRecentForms(String userId);
+
+    List<Form> findAllByUserId(String userId);
 }

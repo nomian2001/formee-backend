@@ -23,6 +23,12 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findAllByFormId(String formId) {
         return productRepo.findAllByFormId(formId);
     }
+
+    @Override
+    public List<Product> findAllByUserId(String userId) {
+        return productRepo.findAllByUserId(userId);
+    }
+
     @Override
     public void setImageName(String name, UUID productId){
         Product product = productRepo.getById(productId);

@@ -11,8 +11,11 @@ import java.util.UUID;
 public interface FormService {
     Form createForm(FormDTO formDTO);
 
-    Optional<Form> getFormById(UUID formId);
+    Form getFormById(UUID formId);
 
     List<Form> getRecentForms(String userId);
+
     Boolean checkFormPermission(String userId,  UUID form);
+
+    void updatePermission(UUID formId);
 }

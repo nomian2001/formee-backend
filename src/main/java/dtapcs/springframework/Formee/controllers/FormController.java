@@ -38,21 +38,28 @@ public class FormController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update-permission")
+    public ResponseEntity updatePermission(@RequestParam UUID formId) {
+        formService.updatePermission(formId);
+        DataResponse response = DataResponse.ok()
+                .withMessage(super.getMessage("message.common.success"))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity getFormByID(@PathVariable UUID id) {
         DataResponse response = null;
-        Optional<Form> result = formService.getFormById(id);
-        if (result.isPresent()) {
-            FormDTO resultDTO = FormMapper.INSTANCE.FormToFormDTO(result.get());
+        Form result = formService.getFormById(id);
+        FormDTO resultDTO = FormMapper.INSTANCE.FormToFormDTO(result);
+        if (result != null) {
             response = DataResponse.ok()
                     .withMessage(super.getMessage("message.common.success"))
                     .withResult(resultDTO)
                     .build();
-        }
-        else {
+        } else {
             response = DataResponse.badRequest()
                     .withMessage(super.getMessage("message.common.not.found"))
-                    .withResult(result)
                     .build();
         }
         return ResponseEntity.ok(response);
@@ -61,7 +68,7 @@ public class FormController extends BaseController {
     @GetMapping("/recent/{userId}")
     public ResponseEntity getRecentForms(@PathVariable String userId) {
         List<Form> result = formService.getRecentForms(userId);
-        List<FormDTO> resultDTO = result.stream().map(form -> FormMapper.INSTANCE.FormToFormDTO(form)).collect(Collectors.toList());
+        List<FormDTO> resultDTO = result.stream().map(FormMapper.INSTANCE::FormToFormDTO).collect(Collectors.toList());
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
                 .withResult(resultDTO)

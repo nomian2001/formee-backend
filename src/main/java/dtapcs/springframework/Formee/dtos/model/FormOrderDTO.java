@@ -1,6 +1,6 @@
 package dtapcs.springframework.Formee.dtos.model;
+
 import dtapcs.springframework.Formee.entities.Auditable;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
@@ -11,5 +11,5 @@ public class FormOrderDTO extends Auditable {
     private String orderName;
     private UUID formId;
     private String response;
-
+    private Boolean confirmed;
 }

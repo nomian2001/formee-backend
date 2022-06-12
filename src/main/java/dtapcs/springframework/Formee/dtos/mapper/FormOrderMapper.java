@@ -13,11 +13,12 @@ import java.util.UUID;
 @Mapper(componentModel = "spring")
 public interface FormOrderMapper {
     FormOrderMapper INSTANCE = Mappers.getMapper(FormOrderMapper.class);
-    @Mapping(source = "formId",target = "formId", qualifiedByName = "formToFormId")
-    FormOrderDTO formOrderToFormOrderDTO(FormOrder formOrder);
+
     @Named("formToFormId")
-    public static UUID formToFormId(Form form)
-    {
+    static UUID formToFormId(Form form) {
         return form.getUuid();
     }
+
+    @Mapping(source = "formId", target = "formId", qualifiedByName = "formToFormId")
+    FormOrderDTO formOrderToFormOrderDTO(FormOrder formOrder);
 }

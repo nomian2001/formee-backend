@@ -1,15 +1,14 @@
 package dtapcs.springframework.Formee.controllers;
 
-import dtapcs.springframework.Formee.dtos.model.*;
-import dtapcs.springframework.Formee.entities.FormOrder;
-import dtapcs.springframework.Formee.entities.FormTemplate;
 import dtapcs.springframework.Formee.dtos.mapper.FormOrderMapper;
+import dtapcs.springframework.Formee.dtos.model.DataResponse;
+import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
+import dtapcs.springframework.Formee.dtos.model.UserDetails;
+import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
-import dtapcs.springframework.Formee.services.inf.FormTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +28,7 @@ public class FormOrderController extends BaseController {
     private FormOrderService formOrderService;
     @Autowired
     private FormService formService;
+
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
     public ResponseEntity createOrder(@RequestBody FormOrderDTO order) {
@@ -43,7 +43,7 @@ public class FormOrderController extends BaseController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/duplicate/{orderId}")
-    public ResponseEntity duplicateOrder(@PathVariable UUID orderId){
+    public ResponseEntity duplicateOrder(@PathVariable UUID orderId) {
         FormOrder result = formOrderService.duplicateOrder(orderId);
         FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
         DataResponse response = DataResponse.ok()
@@ -52,12 +52,11 @@ public class FormOrderController extends BaseController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{formId}")
-    public ResponseEntity findAllByFormId(@PathVariable UUID formId,@RequestParam List<OrderStatus> orderStatus,
-                                          @RequestParam LocalDateTime startDate,
-                                          @RequestParam LocalDateTime endDate) {
-        List<FormOrder> result = formOrderService.filterOrder(formId,orderStatus,startDate,endDate);
+    public ResponseEntity findAllByFormId(@PathVariable UUID formId) {
+        List<FormOrder> result = formOrderService.filterOrder(formId, null, null, null);
         DataResponse response = DataResponse.ok()
                 .withResult(result)
                 .withMessage(super.getMessage("message.common.success"))
@@ -75,31 +74,26 @@ public class FormOrderController extends BaseController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @PutMapping("/update")
-    public ResponseEntity updateOrder(@RequestBody FormOrderDTO order, Principal principal)
-    {
+    public ResponseEntity updateOrder(@RequestBody FormOrderDTO order, Principal principal) {
         UserDetails loginUser = (UserDetails) principal;
-        if(formService.checkFormPermission(loginUser.getId(),order.getFormId()))
-        {
+        if (formService.checkFormPermission(loginUser.getId(), order.getFormId())) {
             FormOrder result = formOrderService.updateOrder(order);
             FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
-            if(result==null)
-            {
+            if (result == null) {
                 DataResponse response = DataResponse.badRequest()
                         .withMessage(super.getMessage("message.common.not.found"))
                         .build();
                 return ResponseEntity.ok(response);
-            }
-            else
-            {
+            } else {
                 DataResponse response = DataResponse.ok()
                         .withMessage(super.getMessage("message.common.success"))
                         .withResult(resultDTO)
                         .build();
                 return ResponseEntity.ok(response);
             }
-        }
-       else {
+        } else {
             DataResponse response = DataResponse.badRequest()
                     .withMessage(super.getMessage("message.common.unauthorized"))
                     .build();

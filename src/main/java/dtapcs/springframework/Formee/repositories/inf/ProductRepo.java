@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface ProductRepo extends JpaRepository<Product, UUID> {
     List<Product> findAllByFormId(String formId);
+
+    List<Product> findAllByUserId(String userId);
 }
