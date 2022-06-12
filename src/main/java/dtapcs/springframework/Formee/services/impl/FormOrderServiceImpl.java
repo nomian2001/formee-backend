@@ -31,14 +31,15 @@ public class FormOrderServiceImpl implements FormOrderService {
         {
             Form form = check.get();
 
-            formRepo.save(form); // new last modified date
+
             if(dto.getOrderName()==null || dto.getOrderName()=="")
             {
                 String orderName = form.getName() + " 1";
             }
             FormOrder newOrder = new FormOrder();
             newOrder.UpdateFormOrder(dto,form);
-
+            form.AddOrder(newOrder);
+            formRepo.save(form); // new last modified date
             return formOrderRepo.save(newOrder);
         }
         return null;

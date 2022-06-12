@@ -1,5 +1,7 @@
 package dtapcs.springframework.Formee.entities;
 
+import dtapcs.springframework.Formee.dtos.model.FormDTO;
+import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.enums.ResponsePermission;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -12,7 +14,7 @@ import java.util.UUID;
 @Data
 @Entity
 public class Form extends Auditable {
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "formId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "formId")
     Set<FormOrder> formOrders;
     @Id
     @GeneratedValue(generator = "UUID")
@@ -45,5 +47,27 @@ public class Form extends Auditable {
     public void InitFormList()
     {
         formOrders = new HashSet<>();
+    }
+    public void UpdateForm(FormDTO dto, Set<FormOrder> orders)
+    {
+        formOrders = orders;
+        UpdateForm(dto);
+    }
+    public void UpdateForm(FormDTO dto)
+    {
+        createdBy = dto.getCreatedBy();
+        createdDate = dto.getCreatedDate();
+        lastModifiedBy = dto.getLastModifiedBy();
+        lastModifiedDate = dto.getLastModifiedDate();
+        shopId = dto.getShopId();
+        name = dto.getName();
+        userId = dto.getUserId();
+        templateId = dto.getTemplateId();
+        layoutJson = dto.getLayoutJson();
+        responsePermission = dto.getResponsePermission();
+    }
+    public void AddOrder(FormOrder order)
+    {
+        formOrders.add(order);
     }
 }

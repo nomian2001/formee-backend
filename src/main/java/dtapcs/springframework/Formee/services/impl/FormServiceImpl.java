@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.services.impl;
 
 import dtapcs.springframework.Formee.dtos.mapper.FormTemplateSummaryMapper;
+import dtapcs.springframework.Formee.dtos.model.FormDTO;
 import dtapcs.springframework.Formee.dtos.model.FormTemplateSummaryDTO;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.enums.ResponsePermission;
@@ -11,6 +12,7 @@ import dtapcs.springframework.Formee.services.inf.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,8 +30,9 @@ public class FormServiceImpl implements FormService {
     private FormTemplateSummaryMapper formTemplateSummaryMapper;
 
     @Override
-    public Form createForm(Form form) {
-        form.InitFormList();
+    public Form createForm(FormDTO formDTO) {
+        Form form = new Form();
+        form.UpdateForm(formDTO, new HashSet<>());
         return formRepo.save(form);
     }
 

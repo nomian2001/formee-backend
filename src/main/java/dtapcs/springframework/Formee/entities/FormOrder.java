@@ -40,12 +40,7 @@ public class FormOrder extends Auditable {
     }
     public void UpdateFormOrder(FormOrderDTO dto, Form form )
     {
-        orderName = dto.getOrderName();
         formId = form;
-        response = dto.getResponse();
-        createdBy = dto.getCreatedBy();
-        createdDate = dto.getCreatedDate();
-        lastModifiedBy = dto.getLastModifiedBy();
-        lastModifiedDate = dto.getLastModifiedDate();
+        UpdateFormOrder(dto);
     }
 }

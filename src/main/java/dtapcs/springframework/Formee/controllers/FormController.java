@@ -1,6 +1,10 @@
 package dtapcs.springframework.Formee.controllers;
 
+import dtapcs.springframework.Formee.dtos.mapper.FormMapper;
+import dtapcs.springframework.Formee.dtos.mapper.FormOrderMapper;
 import dtapcs.springframework.Formee.dtos.model.DataResponse;
+import dtapcs.springframework.Formee.dtos.model.FormDTO;
+import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.FormTemplateSummaryDTO;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormTemplate;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/forms")
@@ -23,10 +28,11 @@ public class FormController extends BaseController {
     private FormService formService;
 
     @PostMapping("/create")
-    public ResponseEntity createForm(@RequestBody Form item) {
+    public ResponseEntity createForm(@RequestBody FormDTO item) {
         Form result = formService.createForm(item);
+        FormDTO resultDTO = FormMapper.INSTANCE.FormToFormDTO(result);
         DataResponse response = DataResponse.ok()
-                .withResult(result)
+                .withResult(resultDTO)
                 .withMessage(super.getMessage("message.common.success"))
                 .build();
         return ResponseEntity.ok(response);
@@ -37,9 +43,10 @@ public class FormController extends BaseController {
         DataResponse response = null;
         Optional<Form> result = formService.getFormById(id);
         if (result.isPresent()) {
+            FormDTO resultDTO = FormMapper.INSTANCE.FormToFormDTO(result.get());
             response = DataResponse.ok()
                     .withMessage(super.getMessage("message.common.success"))
-                    .withResult(result)
+                    .withResult(resultDTO)
                     .build();
         }
         else {
@@ -54,9 +61,10 @@ public class FormController extends BaseController {
     @GetMapping("/recent/{userId}")
     public ResponseEntity getRecentForms(@PathVariable String userId) {
         List<Form> result = formService.getRecentForms(userId);
+        List<FormDTO> resultDTO = result.stream().map(form -> FormMapper.INSTANCE.FormToFormDTO(form)).collect(Collectors.toList());
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
-                .withResult(result)
+                .withResult(resultDTO)
                 .build();
         return ResponseEntity.ok(response);
     }
