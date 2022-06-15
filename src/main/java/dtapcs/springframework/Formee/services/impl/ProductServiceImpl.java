@@ -20,11 +20,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findAllByFormId(String formId) {
-        return productRepo.findAllByFormId(formId);
-    }
-
-    @Override
     public List<Product> findAllByUserId(String userId) {
         return productRepo.findAllByUserId(userId);
     }

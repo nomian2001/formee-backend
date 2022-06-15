@@ -50,8 +50,7 @@ public class SendEmailSSL {
                     InternetAddress.parse(recipients)
             );
             message.setSubject(title);
-            message.setText("Dear Formee's user,"
-                    + "\n\n" + content);
+            message.setText(content);
 
             Transport.send(message);
             System.out.println("Email sent to: " + recipients);

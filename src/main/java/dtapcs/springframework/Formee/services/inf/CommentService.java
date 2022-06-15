@@ -6,5 +6,5 @@ import dtapcs.springframework.Formee.entities.Comment;
 import java.security.Principal;
 
 public interface CommentService {
-    Comment createComment(CommentDTO dto, Principal principal);
+    Comment createComment(CommentDTO dto, Boolean isRequest);
 }

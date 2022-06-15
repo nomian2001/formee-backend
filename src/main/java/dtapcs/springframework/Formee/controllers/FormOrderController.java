@@ -5,19 +5,19 @@ import dtapcs.springframework.Formee.dtos.model.DataResponse;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.entities.FormOrder;
-import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "#{'${formee.url}'}")
@@ -28,6 +28,7 @@ public class FormOrderController extends BaseController {
     private FormOrderService formOrderService;
     @Autowired
     private FormService formService;
+
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
@@ -75,24 +76,39 @@ public class FormOrderController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/recent")
+    public ResponseEntity getRecentOrders() {
+        List<FormOrder> result = formOrderService.findRecentOrders();
+        List<FormOrderDTO> dtos = result.stream()
+                .map(FormOrderMapper.INSTANCE::formOrderToFormOrderDTO)
+                .collect(Collectors.toList());
+        DataResponse response = DataResponse.ok()
+                .withMessage(super.getMessage("message.common.success"))
+                .withResult(dtos)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/update")
-    public ResponseEntity updateOrder(@RequestBody FormOrderDTO order, Principal principal) {
-        UserDetails loginUser = (UserDetails) principal;
-        if (formService.checkFormPermission(loginUser.getId(), order.getFormId())) {
+    public ResponseEntity updateOrder(@RequestBody FormOrderDTO order) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        if (formService.checkFormPermission(userDetails.getId(), order.getFormId())) {
             FormOrder result = formOrderService.updateOrder(order);
             FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
+            DataResponse response;
             if (result == null) {
-                DataResponse response = DataResponse.badRequest()
+                response = DataResponse.badRequest()
                         .withMessage(super.getMessage("message.common.not.found"))
                         .build();
-                return ResponseEntity.ok(response);
             } else {
-                DataResponse response = DataResponse.ok()
+                response = DataResponse.ok()
                         .withMessage(super.getMessage("message.common.success"))
                         .withResult(resultDTO)
                         .build();
-                return ResponseEntity.ok(response);
             }
+            return ResponseEntity.ok(response);
         } else {
             DataResponse response = DataResponse.badRequest()
                     .withMessage(super.getMessage("message.common.unauthorized"))

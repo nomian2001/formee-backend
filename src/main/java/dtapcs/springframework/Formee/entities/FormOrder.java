@@ -24,16 +24,22 @@ public class FormOrder extends Auditable {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
+    @Column(name = "response", columnDefinition = "TEXT")
+    private String response;
+
     private String orderName;
+
+    private String status;
+
+    private Integer discount;
+
+    private Boolean confirmed;
+
+    private Boolean requested;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "formId")
     private Form formId;
-
-    private Boolean confirmed;
-
-    @Column(name = "response", columnDefinition = "TEXT")
-    private String response;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -48,6 +54,9 @@ public class FormOrder extends Auditable {
         lastModifiedBy = dto.getLastModifiedBy();
         lastModifiedDate = dto.getLastModifiedDate();
         confirmed = dto.getConfirmed();
+        requested = dto.getRequested();
+        discount = dto.getDiscount();
+        status = dto.getStatus();
     }
 
     public void UpdateFormOrder(FormOrderDTO dto, Form form) {

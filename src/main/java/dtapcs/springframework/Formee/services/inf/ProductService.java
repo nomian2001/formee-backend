@@ -8,8 +8,6 @@ import java.util.UUID;
 public interface ProductService {
     Product createProduct(Product product);
 
-    List<Product> findAllByFormId(String formId);
-
     List<Product> findAllByUserId(String userId);
 
     void setImageName(String name, UUID productID);

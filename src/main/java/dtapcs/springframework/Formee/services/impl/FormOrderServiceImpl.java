@@ -1,15 +1,25 @@
 package dtapcs.springframework.Formee.services.impl;
 
 import com.google.gson.Gson;
+import dtapcs.springframework.Formee.dtos.model.CommentDTO;
+import dtapcs.springframework.Formee.dtos.model.CustomerDTO;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
+import dtapcs.springframework.Formee.dtos.model.UserDetails;
+import dtapcs.springframework.Formee.entities.Customer;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.repositories.inf.FormOrderRepo;
 import dtapcs.springframework.Formee.repositories.inf.FormRepo;
+import dtapcs.springframework.Formee.repositories.inf.UserRepo;
+import dtapcs.springframework.Formee.services.inf.CommentService;
+import dtapcs.springframework.Formee.services.inf.CustomerService;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,7 +34,13 @@ public class FormOrderServiceImpl implements FormOrderService {
     @Autowired
     FormOrderRepo formOrderRepo;
     @Autowired
+    UserRepo userRepo;
+    @Autowired
     FormService formService;
+    @Autowired
+    CommentService commentService;
+    @Autowired
+    CustomerService customerService;
 
     @Override
     public FormOrder createOrder(FormOrderDTO dto) {
@@ -40,7 +56,28 @@ public class FormOrderServiceImpl implements FormOrderService {
             newOrder.UpdateFormOrder(dto, form);
             form.AddOrder(newOrder);
             formRepo.save(form); // new last modified date
-            return formOrderRepo.save(newOrder);
+            FormOrder result = formOrderRepo.save(newOrder);
+
+            // add new comment
+            CommentDTO comment = new CommentDTO();
+            comment.setMessage("Đã tạo đơn hàng.");
+            comment.setOrderId(result.getUuid());
+            commentService.createComment(comment, false);
+
+            // save customer info
+            Customer customer = new Customer();
+            JSONArray response = new JSONArray(newOrder.getResponse());
+            customer.setPhone(response.getString(0));
+            customer.setName(response.getString(1));
+            customer.setAddress(response.getString(2));
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Object principal = authentication.getPrincipal();
+            UserDetails userDetails = (UserDetails) principal;
+            customer.setUserId(userDetails.getId());
+            customerService.createCustomer(customer);
+
+            return result;
         }
         return null;
     }
@@ -85,8 +122,12 @@ public class FormOrderServiceImpl implements FormOrderService {
     }
 
     @Override
-    public List<FormOrder> findAllByFormId(String formId) {
-        return formOrderRepo.findAllByFormId(formId);
+    public List<FormOrder> findRecentOrders() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        List<FormOrder> result = formOrderRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
+        return result.subList(0, Math.min(result.size(), 5));
     }
 
     @Override

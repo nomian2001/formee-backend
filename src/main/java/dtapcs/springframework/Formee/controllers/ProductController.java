@@ -36,9 +36,9 @@ public class ProductController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{formId}")
-    public ResponseEntity findAllByFormId(@PathVariable String formId) {
-        List<Product> result = productService.findAllByFormId(formId);
+    @GetMapping("/{userId}")
+    public ResponseEntity findByUserId(@PathVariable String userId) {
+        List<Product> result = productService.findAllByUserId(userId);
         DataResponse response = DataResponse.ok()
                 .withResult(result)
                 .withMessage(super.getMessage("message.common.success"))
@@ -47,7 +47,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/inventory/{userId}")
-    public ResponseEntity findAllByUserId(@PathVariable String userId) {
+    public ResponseEntity findAllInventoryByUserId(@PathVariable String userId) {
         List<Product> result = productService.findAllByUserId(userId);
         DataResponse response = DataResponse.ok()
                 .withResult(result)

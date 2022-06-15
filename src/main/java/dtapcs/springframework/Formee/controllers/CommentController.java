@@ -23,8 +23,8 @@ public class CommentController extends BaseController {
     CommentService commentService;
 
     @PostMapping("/create")
-    public ResponseEntity createComment(@RequestBody CommentDTO comment, Principal principal) {
-        Comment result = commentService.createComment(comment, principal);
+    public ResponseEntity createComment(@RequestBody CommentDTO comment) {
+        Comment result = commentService.createComment(comment, true);
         CommentDTO resultDTO = CommentMapper.INSTANCE.commentToCommentDTO(result);
         DataResponse response = DataResponse.ok()
                 .withResult(resultDTO)

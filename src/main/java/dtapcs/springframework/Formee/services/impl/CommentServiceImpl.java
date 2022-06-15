@@ -13,6 +13,8 @@ import dtapcs.springframework.Formee.repositories.inf.FormRepo;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
 import dtapcs.springframework.Formee.services.inf.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -31,27 +33,37 @@ public class CommentServiceImpl implements CommentService {
     UserRepo userRepo;
 
     @Override
-    public Comment createComment(CommentDTO dto, Principal principal) {
+    public Comment createComment(CommentDTO dto, Boolean isRequest) {
         Optional<FormOrder> check = orderRepo.findById(dto.getOrderId());
         if (check.isPresent()) {
             FormOrder order = check.get();
             Comment comment = new Comment();
             comment.setMessage(dto.getMessage());
             comment.setOrderId(order);
-            // send email
-//            UserDetails userDetails = (UserDetails) principal;
-//            String recipient = userRepo.getEmailByUserId(userDetails.getId());
-            String title = "Yêu cầu chỉnh sửa đơn hàng";
-            String content = String.join(" ",
-                    principal.getName(),
-                    "đã gửi yêu cầu chỉnh sửa đơn hàng vào lúc",
-                    new Date().toString(),
-                    "với nội dung: \n",
-                    comment.getMessage());
-            SendEmailRunnable runnable = new SendEmailRunnable(title, content, "ththanh5200@gmail.com");
-            Thread thread = new Thread(runnable);
-            thread.start();
-            // save comment
+
+            if (isRequest) {
+                // send email
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                Object principal = authentication.getPrincipal();
+                UserDetails userDetails = (UserDetails) principal;
+                String recipient = userRepo.getEmailByUsername(order.getCreatedBy());
+                String title = "Yêu cầu chỉnh sửa đơn hàng " + order.getOrderName();
+                String content = String.join(" ",
+                        userDetails.getUsername(),
+                        "đã gửi yêu cầu chỉnh sửa đơn hàng",
+                        order.getOrderName(),
+                        "vào lúc",
+                        new Date().toGMTString(),
+                        "với nội dung:",
+                        "\n\n" + comment.getMessage());
+                SendEmailRunnable runnable = new SendEmailRunnable(title, content, recipient);
+                Thread thread = new Thread(runnable);
+                thread.start();
+                // save items
+                order.setRequested(true);
+                orderRepo.save(order);
+            }
+
             return commentRepo.save(comment);
         }
         return null;

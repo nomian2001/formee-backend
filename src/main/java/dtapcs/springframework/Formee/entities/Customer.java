@@ -4,12 +4,11 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
-public class Product extends Auditable {
+public class Customer extends Auditable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -19,22 +18,15 @@ public class Product extends Auditable {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    @Column(columnDefinition = "TEXT")
-    private String imageBase64;
+    private String name;
 
-    private String imageName;
+    private String phone;
 
-    private String imageList;
-
-    private String formId;
+    private String address;
 
     private String userId;
 
-    private String name;
-
-    private String description;
-
-    private Long inventory;
-
-    private Long productPrice;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "userId")
+//    private FormeeUser userId;
 }
