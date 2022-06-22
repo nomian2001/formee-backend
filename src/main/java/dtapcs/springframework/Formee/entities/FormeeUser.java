@@ -1,6 +1,8 @@
 package dtapcs.springframework.Formee.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -24,6 +26,11 @@ public class FormeeUser extends Auditable {
 
 //    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
 //    private Set<Form> forms;
+
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+//    Set<Customer> customers;
 
     private String username;
 

@@ -10,13 +10,13 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
-    CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
-
-    @Named("customerToCustomerDTO")
-    static String customerToCustomerDTO(FormeeUser user) {
-        return user.getUuid();
-    }
-
-    @Mapping(source = "userId", target = "userId", qualifiedByName = "customerToCustomerDTO")
-    CustomerDTO customerToCustomerDTO(Customer customer);
+//    CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
+//
+//    @Named("customerToCustomerDTO")
+//    static String customerToCustomerDTO(FormeeUser user) {
+//        return user.getUuid();
+//    }
+//
+//    @Mapping(source = "userId", target = "userId", qualifiedByName = "customerToCustomerDTO")
+//    CustomerDTO customerToCustomerDTO(Customer customer);
 }

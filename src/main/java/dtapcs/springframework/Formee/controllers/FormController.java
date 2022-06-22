@@ -75,4 +75,15 @@ public class FormController extends BaseController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/find-all/{userId}")
+    public ResponseEntity getFormsByUserId(@PathVariable String userId) {
+        List<Form> result = formService.getFormsByUserId(userId);
+        List<FormDTO> resultDTO = result.stream().map(FormMapper.INSTANCE::FormToFormDTO).collect(Collectors.toList());
+        DataResponse response = DataResponse.ok()
+                .withMessage(super.getMessage("message.common.success"))
+                .withResult(resultDTO)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

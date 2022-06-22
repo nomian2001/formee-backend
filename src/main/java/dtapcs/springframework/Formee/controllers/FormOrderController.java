@@ -4,10 +4,14 @@ import dtapcs.springframework.Formee.dtos.mapper.FormOrderMapper;
 import dtapcs.springframework.Formee.dtos.model.DataResponse;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
+import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,9 +30,9 @@ public class FormOrderController extends BaseController {
 
     @Autowired
     private FormOrderService formOrderService;
+
     @Autowired
     private FormService formService;
-
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
@@ -55,11 +59,15 @@ public class FormOrderController extends BaseController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/{formId}")
-    public ResponseEntity findAllByFormId(@PathVariable UUID formId) {
-        List<FormOrder> result = formOrderService.filterOrder(formId, null, null, null);
+    @PostMapping("/filter")
+    public ResponseEntity filterOrder(@RequestBody FormOrderSearchRequest request) {
+        List<FormOrder> result = formOrderService.filterOrder(request.getOrderStatus(), request.getStartDate(),
+                                                request.getEndDate(), request.getKeywords(), request.getFormId());
+        List<FormOrderDTO> dtos = result.stream()
+                .map(FormOrderMapper.INSTANCE::formOrderToFormOrderDTO)
+                .collect(Collectors.toList());
         DataResponse response = DataResponse.ok()
-                .withResult(result)
+                .withResult(dtos)
                 .withMessage(super.getMessage("message.common.success"))
                 .build();
         return ResponseEntity.ok(response);
@@ -95,7 +103,7 @@ public class FormOrderController extends BaseController {
         Object principal = authentication.getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         if (formService.checkFormPermission(userDetails.getId(), order.getFormId())) {
-            FormOrder result = formOrderService.updateOrder(order);
+            FormOrder result = formOrderService.updateOrder(order, false);
             FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
             DataResponse response;
             if (result == null) {
@@ -115,6 +123,29 @@ public class FormOrderController extends BaseController {
                     .build();
             return ResponseEntity.ok(response);
         }
+    }
+
+    @PutMapping("/update-status")
+    public ResponseEntity updateOrderStatus(@RequestBody FormOrderDTO order) {
+        FormOrder result = formOrderService.updateOrder(order, true);
+        FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
+        DataResponse response;
+        if (result == null) {
+            response = DataResponse.badRequest()
+                    .withMessage(super.getMessage("message.common.not.found"))
+                    .build();
+        } else {
+            response = DataResponse.ok()
+                    .withMessage(super.getMessage("message.common.success"))
+                    .withResult(resultDTO)
+                    .build();
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<Resource> exportExcel(@RequestBody FormOrderSearchRequest request) {
+        return formOrderService.export(request);
     }
 }
 

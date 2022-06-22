@@ -33,6 +33,7 @@ public class FormServiceImpl implements FormService {
     public Form createForm(FormDTO formDTO) {
         Form form = new Form();
         form.UpdateForm(formDTO, new HashSet<>());
+        form.setResponsePermission(ResponsePermission.OwnerOnly);
         return formRepo.save(form);
     }
 
@@ -50,8 +51,12 @@ public class FormServiceImpl implements FormService {
     @Override
     public List<Form> getRecentForms(String userId) {
         List<Form> result = formRepo.findAllByUserId(userId);
-//        result.forEach(form -> form.setFormOrders(null));
         return result;
+    }
+
+    @Override
+    public List<Form> getFormsByUserId(String userId) {
+        return formRepo.findAllByUserId(userId);
     }
 
     @Override

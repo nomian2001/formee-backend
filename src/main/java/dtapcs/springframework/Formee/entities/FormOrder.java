@@ -2,6 +2,7 @@ package dtapcs.springframework.Formee.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
+import dtapcs.springframework.Formee.enums.OrderStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -29,7 +30,7 @@ public class FormOrder extends Auditable {
 
     private String orderName;
 
-    private String status;
+    private OrderStatus status;
 
     private Integer discount;
 

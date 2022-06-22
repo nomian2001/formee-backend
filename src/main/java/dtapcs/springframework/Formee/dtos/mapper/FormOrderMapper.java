@@ -6,6 +6,7 @@ import dtapcs.springframework.Formee.entities.Auditable;
 import dtapcs.springframework.Formee.entities.Comment;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormOrder;
+import dtapcs.springframework.Formee.enums.OrderStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -35,11 +36,16 @@ public interface FormOrderMapper {
         return new ArrayList<>();
     }
 
+    @Named("orderStatusToEnum")
+    static OrderStatus orderStatusToEnum(OrderStatus orderStatus) {
+        return orderStatus;
+    }
+
     @Mapping(source = "formId", target = "formId", qualifiedByName = "formToFormId")
     @Mapping(source = "comments", target = "comments", qualifiedByName = "commentsToCommentsDTO")
+    @Mapping(source = "status", target = "status", qualifiedByName = "orderStatusToEnum")
     @Mapping(source = "confirmed", target = "confirmed")
     @Mapping(source = "requested", target = "requested")
     @Mapping(source = "discount", target = "discount")
-    @Mapping(source = "status", target = "status")
     FormOrderDTO formOrderToFormOrderDTO(FormOrder formOrder);
 }

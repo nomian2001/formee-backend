@@ -15,6 +15,8 @@ public interface FormService {
 
     List<Form> getRecentForms(String userId);
 
+    List<Form> getFormsByUserId(String userId);
+
     Boolean checkFormPermission(String userId,  UUID form);
 
     void updatePermission(UUID formId);

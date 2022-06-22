@@ -22,6 +22,7 @@ public class Customer extends Auditable {
 
     private String phone;
 
+    @Column(columnDefinition = "TEXT")
     private String address;
 
     private String userId;
