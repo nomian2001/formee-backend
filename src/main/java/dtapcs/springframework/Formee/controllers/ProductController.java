@@ -57,7 +57,10 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/{productId}")
-    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, @PathVariable UUID productId, HttpServletRequest request) {
+    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file,
+                                      RedirectAttributes redirectAttributes,
+                                      @PathVariable UUID productId,
+                                      HttpServletRequest request) {
         UUID imageUUID = UUID.randomUUID();
         //random name
         System.out.println("tenfile " + file.getOriginalFilename());
@@ -69,4 +72,6 @@ public class ProductController extends BaseController {
         DataResponse response = DataResponse.ok().build();
         return ResponseEntity.ok(response);
     }
+
+
 }

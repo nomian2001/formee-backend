@@ -30,4 +30,13 @@ public class ProductServiceImpl implements ProductService {
         product.setImageName(name);
         productRepo.save(product);
     }
+
+    @Override
+    public void decreaseInventory(UUID productId, int quantity) {
+        Product product = productRepo.findById(productId).orElse(null);
+        if (product != null) {
+            product.setInventory(product.getInventory() - quantity);
+            productRepo.save(product);
+        }
+    }
 }

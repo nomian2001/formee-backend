@@ -14,6 +14,7 @@ import dtapcs.springframework.Formee.repositories.inf.FormRepo;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
 import dtapcs.springframework.Formee.services.inf.*;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -51,6 +52,8 @@ public class FormOrderServiceImpl implements FormOrderService {
     CustomerService customerService;
     @Autowired
     ExcelService fileService;
+    @Autowired
+    ProductService productService;
 
     @Override
     public FormOrder createOrder(FormOrderDTO dto) {
@@ -81,6 +84,13 @@ public class FormOrderServiceImpl implements FormOrderService {
             customer.setPhone(response.getString(0));
             customer.setName(response.getString(1));
             customer.setAddress(response.get(2).toString());
+
+            // update inventory
+            JSONArray products = new JSONArray(response.get(4).toString());
+            for (int i = 0; i < products.length(); ++i) {
+                JSONObject obj = products.getJSONObject(i);
+                productService.decreaseInventory(UUID.fromString(obj.getString("uuid")), obj.getInt("quantity"));
+            }
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object principal = authentication.getPrincipal();
@@ -136,9 +146,16 @@ public class FormOrderServiceImpl implements FormOrderService {
     @Override
     public ResponseEntity<Resource> export(FormOrderSearchRequest request) {
         String filename = "formResponse.xlsx";
+        String formName = "";
+        if (request.getFormId() != null) {
+            Form form = formRepo.findById(request.getFormId()).orElse(null);
+            if (form != null) {
+                formName = form.getName();
+            }
+        }
         List<FormOrder> orderList = filterOrder(request.getOrderStatus(), request.getStartDate(),
                                                 request.getEndDate(), request.getKeywords(), null);
-        ByteArrayInputStream bais = ExcelHelper.FormResponseToExcel(orderList);
+        ByteArrayInputStream bais = ExcelHelper.FormResponseToExcel(orderList, formName, request.getStartDate(), request.getEndDate());
         InputStreamResource file = new InputStreamResource(bais);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)

@@ -11,4 +11,6 @@ public interface ProductService {
     List<Product> findAllByUserId(String userId);
 
     void setImageName(String name, UUID productID);
+
+    void decreaseInventory(UUID productID, int quantity);
 }

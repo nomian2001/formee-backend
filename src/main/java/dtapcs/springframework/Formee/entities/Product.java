@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.entities;
 
+import dtapcs.springframework.Formee.enums.ProductType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -37,4 +38,8 @@ public class Product extends Auditable {
     private Long inventory;
 
     private Long productPrice;
+
+    private Long costPrice;
+
+    private ProductType type;
 }
