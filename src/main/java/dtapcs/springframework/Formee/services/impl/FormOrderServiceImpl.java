@@ -2,6 +2,7 @@ package dtapcs.springframework.Formee.services.impl;
 
 import dtapcs.springframework.Formee.dtos.model.CommentDTO;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
+import dtapcs.springframework.Formee.dtos.model.OrderStatisticsDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.Customer;
@@ -209,5 +210,39 @@ public class FormOrderServiceImpl implements FormOrderService {
         newOrder.setResponse(order.getResponse());
         formOrderRepo.save(newOrder);
         return newOrder;
+    }
+    @Override
+    public List<OrderStatisticsDTO> getOrderStatistics(String userName, int startMonth, int endMonth, int startYear, int endYear){
+        List<OrderStatisticsDTO> result =  new ArrayList<>();
+        while(startMonth!=endMonth && startYear!=endYear)
+        {
+            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName,startMonth,startYear);
+            double monthSaleTotal = 0;
+            double monthCostTotal = 0;
+            for(FormOrder order: orderOfCurrentMonth){
+                int total = 0;
+                int costTotal = 0;
+                JSONArray response = new JSONArray(order.getResponse());
+                JSONArray products = new JSONArray(response.get(4).toString()); // actual response
+                for (int i = 0; i < products.length(); ++i) {
+                    JSONObject obj = products.getJSONObject(i);
+                    total += obj.getInt("productPrice") * obj.getInt("quantity");
+                    costTotal+=obj.getInt("costPrice") * obj.getInt("quantity");
+                }
+                monthSaleTotal+=total*(order.getDiscount()/100);
+                monthCostTotal+=costTotal;
+            }
+            OrderStatisticsDTO currentStat = new OrderStatisticsDTO();
+            currentStat.setTotalSale(monthSaleTotal);
+            currentStat.setMonth(startMonth);
+            currentStat.setYear(startYear);
+            currentStat.setNumberOfOrder(orderOfCurrentMonth.size());
+            currentStat.setProfit(monthSaleTotal-monthCostTotal);
+            result.add(currentStat);
+            startMonth++;
+            startYear +=startMonth/12;
+            startMonth%=12;
+        }
+        return  result;
     }
 }

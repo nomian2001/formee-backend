@@ -1,6 +1,7 @@
 package dtapcs.springframework.Formee.services.inf;
 
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
+import dtapcs.springframework.Formee.dtos.model.OrderStatisticsDTO;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
@@ -26,4 +27,5 @@ public interface FormOrderService {
     List<FormOrder> filterOrder(List<OrderStatus> orderStatus, String startDate, String endDate, String keywords, UUID formId);
 
     ResponseEntity<Resource> export(FormOrderSearchRequest request);
+    List<OrderStatisticsDTO> getOrderStatistics(String userName, int startMonth, int endMonth, int startYear, int endYear);
 }
