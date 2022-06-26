@@ -2,13 +2,14 @@ package dtapcs.springframework.Formee.services.impl;
 
 import dtapcs.springframework.Formee.dtos.model.CommentDTO;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
-import dtapcs.springframework.Formee.dtos.model.OrderStatisticsDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.Customer;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormOrder;
+import dtapcs.springframework.Formee.entities.Product;
 import dtapcs.springframework.Formee.enums.OrderStatus;
+import dtapcs.springframework.Formee.enums.ProductType;
 import dtapcs.springframework.Formee.helper.ExcelHelper;
 import dtapcs.springframework.Formee.repositories.inf.FormOrderRepo;
 import dtapcs.springframework.Formee.repositories.inf.FormRepo;
@@ -30,10 +31,7 @@ import org.springframework.util.StringUtils;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,31 +75,37 @@ public class FormOrderServiceImpl implements FormOrderService {
             CommentDTO comment = new CommentDTO();
             comment.setMessage("Đã tạo đơn hàng.");
             comment.setOrderId(result.getUuid());
-            commentService.createComment(comment, false);
+            commentService.createComment(comment, false, false);
+
+            JSONArray response = new JSONArray(newOrder.getResponse());
 
             // save customer info
-            Customer customer = new Customer();
-            JSONArray response = new JSONArray(newOrder.getResponse());
-            customer.setPhone(response.getString(0));
-            customer.setName(response.getString(1));
-            customer.setAddress(response.get(2).toString());
+            createCustomer(response);
 
             // update inventory
             JSONArray products = new JSONArray(response.get(4).toString());
             for (int i = 0; i < products.length(); ++i) {
                 JSONObject obj = products.getJSONObject(i);
-                productService.decreaseInventory(UUID.fromString(obj.getString("uuid")), obj.getInt("quantity"));
+                productService.updateInventoryAndSales(UUID.fromString(obj.getString("uuid")), obj.getInt("quantity"));
             }
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Object principal = authentication.getPrincipal();
-            UserDetails userDetails = (UserDetails) principal;
-            customer.setUserId(userDetails.getId());
-            customerService.createCustomer(customer);
 
             return result;
         }
         return null;
+    }
+
+    private void createCustomer(JSONArray response) {
+        Customer customer = new Customer();
+        customer.setPhone(response.getString(0));
+        customer.setName(response.getString(1));
+        customer.setAddress(response.get(2).toString());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        customer.setUserId(userDetails.getId());
+        customerService.createCustomer(customer);
     }
 
     @Override
@@ -111,12 +115,10 @@ public class FormOrderServiceImpl implements FormOrderService {
             Form form = formRepo.findById(formId).orElse(null);
             if (form != null) {
                 orderList = findOrdersByFormId(form);
-            }
-            else {
+            } else {
                 return null;
             }
-        }
-        else {
+        } else {
             orderList = findAllOrders();
         }
         Stream<FormOrder> orderStream = orderList.stream();
@@ -155,7 +157,7 @@ public class FormOrderServiceImpl implements FormOrderService {
             }
         }
         List<FormOrder> orderList = filterOrder(request.getOrderStatus(), request.getStartDate(),
-                                                request.getEndDate(), request.getKeywords(), null);
+                request.getEndDate(), request.getKeywords(), null);
         ByteArrayInputStream bais = ExcelHelper.FormResponseToExcel(orderList, formName, request.getStartDate(), request.getEndDate());
         InputStreamResource file = new InputStreamResource(bais);
         return ResponseEntity.ok()
@@ -192,11 +194,26 @@ public class FormOrderServiceImpl implements FormOrderService {
         if (check.isPresent()) {
             FormOrder currentOrder = check.get();
             if (statusOnly) {
-                currentOrder.setStatus(dto.getStatus());
-            }
-            else {
+                OrderStatus status = dto.getStatus();
+                currentOrder.setStatus(status);
+                if (status.equals(OrderStatus.CONFIRMED)) {
+                    // create comment
+                    CommentDTO comment = new CommentDTO();
+                    comment.setMessage("Đã xác nhận đơn hàng.");
+                    comment.setOrderId(currentOrder.getUuid());
+                    commentService.createComment(comment, false, false);
+                }
+            } else {
+                if (dto.getRequested()) {
+                    CommentDTO comment = new CommentDTO();
+                    comment.setMessage("Đã chỉnh sửa đơn hàng: " + dto.getMessage());
+                    comment.setOrderId(currentOrder.getUuid());
+                    commentService.createComment(comment, false, false);
+                    dto.setStatus(OrderStatus.PENDING);
+                }
                 currentOrder.UpdateFormOrder(dto);
             }
+
             return formOrderRepo.save(currentOrder);
         }
         return null; // không tìm thấy form cần update
@@ -204,45 +221,118 @@ public class FormOrderServiceImpl implements FormOrderService {
 
     @Override
     public FormOrder duplicateOrder(UUID formOrderId) {
-        FormOrder order = formOrderRepo.getById(formOrderId);
+        FormOrder order = formOrderRepo.findById(formOrderId).orElse(null);
+        if (order == null) {
+            return null;
+        }
         FormOrder newOrder = new FormOrder();
-        newOrder.setFormId(order.getFormId());
-        newOrder.setResponse(order.getResponse());
-        formOrderRepo.save(newOrder);
-        return newOrder;
+        newOrder.duplicate(order);
+        // save customer info
+        createCustomer(new JSONArray(newOrder.getResponse()));
+        return formOrderRepo.save(newOrder);
     }
+
     @Override
-    public List<OrderStatisticsDTO> getOrderStatistics(String userName, int startMonth, int endMonth, int startYear, int endYear){
-        List<OrderStatisticsDTO> result =  new ArrayList<>();
-        while(startMonth!=endMonth && startYear!=endYear)
-        {
-            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName,startMonth,startYear);
+    public Map<String, String> getRevenueStatistics(String userName, int year) {
+        Map<String, String> result = new HashMap<>();
+        JSONArray data = new JSONArray();
+        for (int month = 1; month <= 12; ++month) {
+            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName, month, year);
             double monthSaleTotal = 0;
             double monthCostTotal = 0;
-            for(FormOrder order: orderOfCurrentMonth){
-                int total = 0;
-                int costTotal = 0;
+            for (FormOrder order : orderOfCurrentMonth) {
+                double total = 0;
+                double costTotal = 0;
                 JSONArray response = new JSONArray(order.getResponse());
                 JSONArray products = new JSONArray(response.get(4).toString()); // actual response
                 for (int i = 0; i < products.length(); ++i) {
                     JSONObject obj = products.getJSONObject(i);
-                    total += obj.getInt("productPrice") * obj.getInt("quantity");
-                    costTotal+=obj.getInt("costPrice") * obj.getInt("quantity");
+                    if (obj.has("productPrice") && obj.has("quantity") && obj.has("costPrice")) {
+                        total += obj.getInt("productPrice") * obj.getInt("quantity");
+                        costTotal += obj.getInt("costPrice") * obj.getInt("quantity");
+                    }
                 }
-                monthSaleTotal+=total*(order.getDiscount()/100);
-                monthCostTotal+=costTotal;
+                monthSaleTotal += ((total * (100 - order.getDiscount()) ) / 100);
+                monthCostTotal += costTotal;
             }
-            OrderStatisticsDTO currentStat = new OrderStatisticsDTO();
-            currentStat.setTotalSale(monthSaleTotal);
-            currentStat.setMonth(startMonth);
-            currentStat.setYear(startYear);
-            currentStat.setNumberOfOrder(orderOfCurrentMonth.size());
-            currentStat.setProfit(monthSaleTotal-monthCostTotal);
-            result.add(currentStat);
-            startMonth++;
-            startYear +=startMonth/12;
-            startMonth%=12;
+            data.put(monthSaleTotal - monthCostTotal);
         }
-        return  result;
+        result.put(String.valueOf(year), data.toString());
+        return result;
+    }
+
+    @Override
+    public Map<String, String> getCategoryStatistics(String userName) {
+        Map<String, String> result = new HashMap<>();
+        List<FormOrder> orderOfCurrentMonth = formOrderRepo.findAllByCreatedByOrderByCreatedDateDesc(userName);
+        for (FormOrder order : orderOfCurrentMonth) {
+            JSONArray response = new JSONArray(order.getResponse());
+            JSONArray products = new JSONArray(response.get(4).toString()); // actual response
+            for (int i = 0; i < products.length(); ++i) {
+                JSONObject obj = products.getJSONObject(i);
+                if (obj.has("type")) {
+                    ProductType type = ProductType.valueOf(obj.getString("type"));
+                    if (result.containsKey(type.getName())) {
+                        result.put(type.getName(), String.valueOf(Integer.parseInt(result.get(type.getName())) + 1));
+                    }
+                    else {
+                        result.put(type.getName(), "1");
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, String> getProductStatistics(String userName) {
+        Map<String, String> result = new HashMap<>();
+        List<FormOrder> orderOfCurrentMonth = formOrderRepo.findAllByCreatedByOrderByCreatedDateDesc(userName);
+        for (FormOrder order : orderOfCurrentMonth) {
+            JSONArray response = new JSONArray(order.getResponse());
+            JSONArray products = new JSONArray(response.get(4).toString()); // actual response
+            for (int i = 0; i < products.length(); ++i) {
+                JSONObject obj = products.getJSONObject(i);
+                if (obj.has("uuid")) {
+                    Product product = productService.findById(UUID.fromString(obj.getString("uuid")));
+                    if (!result.containsKey(product.getName())) {
+                        result.put(product.getName(), String.valueOf(product.getSales()));
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, String> getCustomerStatistics(String userName, int year) {
+        Map<String, String> result = new HashMap<>();
+        JSONArray data = new JSONArray();
+        for (int month = 1; month <= 12; ++month) {
+            List<String> phoneList = new ArrayList<>();
+            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName, month, year);
+            for (FormOrder order : orderOfCurrentMonth) {
+                JSONArray response = new JSONArray(order.getResponse());
+                String phone = response.get(0).toString();
+                if (!phoneList.contains(phone)) {
+                    phoneList.add(phone); // phone number is unique to each customer
+                }
+            }
+            data.put(phoneList.size());
+        }
+        result.put(String.valueOf(year), data.toString());
+        return result;
+    }
+
+    @Override
+    public Map<String, String> getTotalStatistics(String username) {
+        Map<String, String> result = new HashMap<>();
+        Long total = formOrderRepo.countByCreatedBy(username);
+        result.put("total", String.valueOf(total));
+        Long completed = formOrderRepo.countByCreatedByAndStatus(username, OrderStatus.COMPLETED);
+        result.put("completed", String.valueOf(completed));
+        Long pending = formOrderRepo.countByCreatedByAndStatus(username, OrderStatus.PENDING);
+        result.put("pending", String.valueOf(pending));
+        return result;
     }
 }

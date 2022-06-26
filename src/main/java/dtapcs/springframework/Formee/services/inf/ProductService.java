@@ -3,14 +3,19 @@ package dtapcs.springframework.Formee.services.inf;
 import dtapcs.springframework.Formee.entities.Product;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface ProductService {
     Product createProduct(Product product);
 
+    Product findById(UUID productID);
+
     List<Product> findAllByUserId(String userId);
 
     void setImageName(String name, UUID productID);
 
-    void decreaseInventory(UUID productID, int quantity);
+    void updateInventoryAndSales(UUID productID, int quantity);
+
+    Map<String, String> getTotalStatistics(String username);
 }

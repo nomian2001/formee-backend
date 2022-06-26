@@ -27,7 +27,5 @@ public class Customer extends Auditable {
 
     private String userId;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "userId")
-//    private FormeeUser userId;
+    private Long totalOrders = 0L;
 }

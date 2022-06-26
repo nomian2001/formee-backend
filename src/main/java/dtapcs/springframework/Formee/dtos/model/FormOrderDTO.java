@@ -15,6 +15,7 @@ public class FormOrderDTO extends Auditable {
     private OrderStatus status;
     private String response;
     private String orderName;
+    private String message;
     private Boolean confirmed;
     private Boolean requested;
     private Integer discount;

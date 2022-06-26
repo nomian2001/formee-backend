@@ -6,7 +6,9 @@ import dtapcs.springframework.Formee.services.inf.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -15,15 +17,30 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void createCustomer(Customer customer) {
-        List<Customer> check = customerRepo.findByPhoneAndUserId(customer.getPhone(), customer.getUserId());
-        if (check.size() > 0) {
-            return;
+        Customer check = customerRepo.findByPhoneAndUserId(customer.getPhone(), customer.getUserId());
+        if (check != null) {
+            check.setTotalOrders(check.getTotalOrders() + 1);
         }
-        customerRepo.save(customer);
+        else {
+            check = customer;
+        }
+        customerRepo.save(check);
     }
 
     @Override
     public List<Customer> findAllByUserId(String userId) {
         return customerRepo.findAllByUserIdOrderByCreatedDateDesc(userId);
+    }
+
+    @Override
+    public Map<String, String> getTotalStatistics(String username) {
+        Map<String, String> result = new HashMap<>();
+        Long total = customerRepo.countByCreatedBy(username);
+        result.put("total", String.valueOf(total));
+        Long newCustomers = customerRepo.countByCreatedByAndTotalOrders(username, 1L);
+        result.put("new", String.valueOf(newCustomers));
+        Long returningCustomers = customerRepo.countByCreatedByAndTotalOrdersGreaterThan(username, 1L);
+        result.put("returning", String.valueOf(returningCustomers));
+        return result;
     }
 }

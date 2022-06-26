@@ -24,7 +24,7 @@ public class CommentController extends BaseController {
 
     @PostMapping("/create")
     public ResponseEntity createComment(@RequestBody CommentDTO comment) {
-        Comment result = commentService.createComment(comment, true);
+        Comment result = commentService.createComment(comment, true, comment.getFromEdit());
         CommentDTO resultDTO = CommentMapper.INSTANCE.commentToCommentDTO(result);
         DataResponse response = DataResponse.ok()
                 .withResult(resultDTO)

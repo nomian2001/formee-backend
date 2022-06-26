@@ -46,4 +46,5 @@ public class LoginController extends BaseController {
         }
     }
 
+    // TODO: get full name and profile picture
 }

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepo extends JpaRepository<FormeeUser, String> {
     @Query(nativeQuery = true, value = "SELECT email FROM formee_user WHERE username = :username")
     String getEmailByUsername(String username);
+
+    FormeeUser findByPhone(String phone);
 }

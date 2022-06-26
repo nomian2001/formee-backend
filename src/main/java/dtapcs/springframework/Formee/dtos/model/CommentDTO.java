@@ -10,4 +10,5 @@ public class CommentDTO extends Auditable {
     private UUID uuid;
     private UUID orderId;
     private String message;
+    private Boolean fromEdit;
 }

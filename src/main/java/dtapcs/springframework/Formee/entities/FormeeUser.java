@@ -1,5 +1,6 @@
 package dtapcs.springframework.Formee.entities;
 
+import dtapcs.springframework.Formee.dtos.model.UserDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -21,17 +22,6 @@ public class FormeeUser extends Auditable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
     private Set<UserHistory> userHistories;
 
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ownerId")
-//    private Set<Shop> shops;
-
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-//    private Set<Form> forms;
-
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-//    Set<Customer> customers;
-
     private String username;
 
     private String fullName;
@@ -43,6 +33,8 @@ public class FormeeUser extends Auditable {
     private String email;
 
     private String profilePicture;
+
+    private String phone;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -61,7 +53,6 @@ public class FormeeUser extends Auditable {
     public FormeeUser(UserSettings userSettings, Set<UserHistory> userHistories, String username, String fullName, String password, int gender, String email, String profilePicture) {
         this.userSettings = userSettings;
         this.userHistories = userHistories;
-//        this.shops = shops;
         this.username = username;
         this.fullName = fullName;
         this.password = password;
@@ -73,12 +64,19 @@ public class FormeeUser extends Auditable {
     public void UpdateProfile(FormeeUser newUser) {
         this.userSettings = newUser.getUserSettings();
         this.userHistories = newUser.getUserHistories();
-//        this.shops = newUser.getShops();
         this.username = newUser.getUsername();
         this.fullName = newUser.getFullName();
         this.password = newUser.getPassword();
         this.gender = newUser.getGender();
         this.email = newUser.getEmail();
         this.profilePicture = newUser.getProfilePicture();
+    }
+
+    public void updateProfileFromDTO(UserDTO newUser) {
+        this.username = newUser.getUsername();
+        this.fullName = newUser.getFullName();
+        this.email = newUser.getEmail();
+        this.profilePicture = newUser.getProfilePicture();
+        this.phone = newUser.getPhone();
     }
 }

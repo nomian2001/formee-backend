@@ -9,9 +9,10 @@ import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,13 +62,17 @@ public class FormOrderController extends BaseController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/filter")
     public ResponseEntity filterOrder(@RequestBody FormOrderSearchRequest request) {
+        Integer pageNumber = request.getPageNumber();
+        Integer pageSize = request.getPageSize();
         List<FormOrder> result = formOrderService.filterOrder(request.getOrderStatus(), request.getStartDate(),
-                                                request.getEndDate(), request.getKeywords(), request.getFormId());
+                request.getEndDate(), request.getKeywords(), request.getFormId());
         List<FormOrderDTO> dtos = result.stream()
                 .map(FormOrderMapper.INSTANCE::formOrderToFormOrderDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                .subList(pageNumber * pageSize, Math.min((pageNumber + 1) * pageSize, result.size()));
+        Page<FormOrderDTO> page = new PageImpl<>(dtos, PageRequest.of(pageNumber, pageSize), result.size());
         DataResponse response = DataResponse.ok()
-                .withResult(dtos)
+                .withResult(page)
                 .withMessage(super.getMessage("message.common.success"))
                 .build();
         return ResponseEntity.ok(response);

@@ -5,12 +5,13 @@ import dtapcs.springframework.Formee.dtos.model.OrderStatisticsDTO;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
-import java.io.ByteArrayInputStream;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface FormOrderService {
@@ -27,5 +28,14 @@ public interface FormOrderService {
     List<FormOrder> filterOrder(List<OrderStatus> orderStatus, String startDate, String endDate, String keywords, UUID formId);
 
     ResponseEntity<Resource> export(FormOrderSearchRequest request);
-    List<OrderStatisticsDTO> getOrderStatistics(String userName, int startMonth, int endMonth, int startYear, int endYear);
+
+    Map<String, String> getRevenueStatistics(String userName, int year);
+
+    Map<String, String> getCategoryStatistics(String userName);
+
+    Map<String, String> getProductStatistics(String userName);
+
+    Map<String, String> getCustomerStatistics(String userName, int year);
+
+    Map<String, String> getTotalStatistics(String username);
 }

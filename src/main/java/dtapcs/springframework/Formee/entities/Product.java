@@ -41,5 +41,7 @@ public class Product extends Auditable {
 
     private Long costPrice;
 
+    private Long sales = 0L;
+
     private ProductType type;
 }

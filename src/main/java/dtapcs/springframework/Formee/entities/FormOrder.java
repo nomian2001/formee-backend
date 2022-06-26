@@ -54,10 +54,18 @@ public class FormOrder extends Auditable {
         createdDate = dto.getCreatedDate();
         lastModifiedBy = dto.getLastModifiedBy();
         lastModifiedDate = dto.getLastModifiedDate();
-        confirmed = dto.getConfirmed();
-        requested = dto.getRequested();
+//        confirmed = dto.getConfirmed();
+//        requested = dto.getRequested();
         discount = dto.getDiscount();
         status = dto.getStatus();
+    }
+
+    public void duplicate(FormOrder order) {
+        orderName = order.getOrderName() + " - Bản sao";
+        response = order.getResponse();
+        discount = order.getDiscount();
+        status = OrderStatus.PENDING;
+        formId = order.getFormId();
     }
 
     public void UpdateFormOrder(FormOrderDTO dto, Form form) {
