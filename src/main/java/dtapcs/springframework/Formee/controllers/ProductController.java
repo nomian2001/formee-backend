@@ -4,6 +4,7 @@ import dtapcs.springframework.Formee.dtos.model.DataResponse;
 import dtapcs.springframework.Formee.entities.Product;
 import dtapcs.springframework.Formee.services.inf.ProductService;
 import dtapcs.springframework.Formee.services.inf.StorageService;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,19 +58,23 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/{productId}")
-    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file,
+    public ResponseEntity uploadImage(@RequestParam("files[]") MultipartFile[] files,
                                       RedirectAttributes redirectAttributes,
                                       @PathVariable UUID productId,
                                       HttpServletRequest request) {
-        UUID imageUUID = UUID.randomUUID();
-        //random name
-        System.out.println("tenfile " + file.getOriginalFilename());
-        String imageName = imageUUID + file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
-        productService.setImageName(imageName, productId);
-        storageService.store(file, imageName, request);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-        DataResponse response = DataResponse.ok().build();
+        JSONArray imageList = new JSONArray();
+        for (MultipartFile file : files) {
+            UUID imageUUID = UUID.randomUUID();
+            // random name
+            System.out.println("tenfile " + file.getOriginalFilename());
+            String imageName = imageUUID + file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+            imageList.put(imageName);
+            storageService.store(file, imageName, request);
+            redirectAttributes.addFlashAttribute("message",
+                    "You successfully uploaded " + file.getOriginalFilename() + "!");
+        }
+        productService.setImageName(imageList.getString(0), imageList.toString(), productId);
+        DataResponse response = DataResponse.ok().withResult(imageList.toString()).build();
         return ResponseEntity.ok(response);
     }
 

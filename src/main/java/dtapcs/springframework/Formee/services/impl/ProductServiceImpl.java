@@ -33,9 +33,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void setImageName(String name, UUID productId){
+    public void setImageName(String name, String imageList, UUID productId){
         Product product = productRepo.getById(productId);
         product.setImageName(name);
+        product.setImageList(imageList);
         productRepo.save(product);
     }
 

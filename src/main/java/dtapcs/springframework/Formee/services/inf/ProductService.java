@@ -13,7 +13,7 @@ public interface ProductService {
 
     List<Product> findAllByUserId(String userId);
 
-    void setImageName(String name, UUID productID);
+    void setImageName(String name, String imageList, UUID productID);
 
     void updateInventoryAndSales(UUID productID, int quantity);
 
