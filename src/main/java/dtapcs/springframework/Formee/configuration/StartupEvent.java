@@ -9,17 +9,19 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 @Component
 public class StartupEvent implements ApplicationRunner {
@@ -39,13 +41,13 @@ public class StartupEvent implements ApplicationRunner {
 
         // add address commons
         if (addressRepo.count() == 0) {
-            File file = ResourceUtils.getFile("classpath:dm_dia_chi_commons.xls");
-            FileInputStream in = new FileInputStream(file);
-            HSSFWorkbook workbook = new HSSFWorkbook(in);
+//            File file = ResourceUtils.getFile("classpath:dm_dia_chi_commons.xls");
+            InputStream in = new ClassPathResource("\\dm_dia_chi_commons.xls").getInputStream();
+            Workbook workbook = WorkbookFactory.create(in);
             for (int i = 0; i < workbook.getNumberOfSheets(); ++i) {
-                HSSFSheet sheet = workbook.getSheetAt(i);
+                Sheet sheet = workbook.getSheetAt(i);
                 for (int j = 1; j <= sheet.getLastRowNum(); ++j) {
-                    HSSFRow row = sheet.getRow(j);
+                    Row row = sheet.getRow(j);
                     if (row != null) {
                         AddressCommons address = new AddressCommons();
                         if (row.getCell(0) != null) {
@@ -54,7 +56,7 @@ public class StartupEvent implements ApplicationRunner {
                                 address.setName_(row.getCell(1).getStringCellValue());
                                 if (row.getCell(3) != null) {
                                     address.setType_(row.getCell(3).getStringCellValue());
-                                    HSSFCell parentCode = row.getCell(2);
+                                    Cell parentCode = row.getCell(2);
                                     if (parentCode == null) {
                                         address.setParentCode(null);
                                     }
