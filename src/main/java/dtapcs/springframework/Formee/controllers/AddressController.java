@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -20,6 +22,7 @@ public class AddressController extends BaseController {
     @GetMapping("")
     public ResponseEntity findAddressCommons(@RequestParam(name = "parentCode", defaultValue = "") String parentCode) {
         List<AddressCommons> result = addressService.findAddressCommons(parentCode);
+        result.sort(Comparator.comparing(AddressCommons::getName_));
         DataResponse response = DataResponse.ok()
                 .withResult(result)
                 .withMessage(super.getMessage("message.common.success"))

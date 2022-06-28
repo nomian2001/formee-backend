@@ -35,7 +35,6 @@ public class UserController extends BaseController {
         else {
             response = DataResponse.ok()
                     .withMessage(super.getMessage("message.common.success"))
-                    .withResult(result)
                     .build();
         }
         return ResponseEntity.ok(response);

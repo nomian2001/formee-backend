@@ -41,7 +41,6 @@ public class StartupEvent implements ApplicationRunner {
 
         // add address commons
         if (addressRepo.count() == 0) {
-//            File file = ResourceUtils.getFile("classpath:dm_dia_chi_commons.xls");
             InputStream in = new ClassPathResource("\\dm_dia_chi_commons.xls").getInputStream();
             Workbook workbook = WorkbookFactory.create(in);
             for (int i = 0; i < workbook.getNumberOfSheets(); ++i) {

@@ -78,7 +78,6 @@ public class CommentServiceImpl implements CommentService {
                 Thread thread = new Thread(runnable);
                 thread.start();
                 // save items
-//                order.setRequested(true);
                 order.setStatus(OrderStatus.REQUESTED);
                 orderRepo.save(order);
             }

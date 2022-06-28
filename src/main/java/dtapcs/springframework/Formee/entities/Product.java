@@ -20,9 +20,6 @@ public class Product extends Auditable {
     @Column(updatable = false, nullable = false)
     private UUID uuid;
 
-    @Column(columnDefinition = "TEXT")
-    private String imageBase64;
-
     private String imageName;
 
     private String imageList;

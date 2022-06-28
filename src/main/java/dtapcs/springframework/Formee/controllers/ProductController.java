@@ -1,11 +1,15 @@
 package dtapcs.springframework.Formee.controllers;
 
 import dtapcs.springframework.Formee.dtos.model.DataResponse;
+import dtapcs.springframework.Formee.dtos.request.ProductSearchRequest;
 import dtapcs.springframework.Formee.entities.Product;
 import dtapcs.springframework.Formee.services.inf.ProductService;
 import dtapcs.springframework.Formee.services.inf.StorageService;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,6 +56,29 @@ public class ProductController extends BaseController {
         List<Product> result = productService.findAllByUserId(userId);
         DataResponse response = DataResponse.ok()
                 .withResult(result)
+                .withMessage(super.getMessage("message.common.success"))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity findAllInventoryByUserId(@RequestBody ProductSearchRequest request) {
+        Integer pageNumber = request.getPageNumber();
+        Integer pageSize = request.getPageSize();
+        List<Product> result = productService.filterProduct(request.getKeywords(), request.getTypes());
+        result = result.subList(pageNumber * pageSize, Math.min((pageNumber + 1) * pageSize, result.size()));
+        Page<Product> page = new PageImpl<>(result, PageRequest.of(pageNumber, pageSize), result.size());
+        DataResponse response = DataResponse.ok()
+                .withResult(page)
+                .withMessage(super.getMessage("message.common.success"))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity deleteById(@PathVariable UUID productId) {
+        productService.deleteById(productId);
+        DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
                 .build();
         return ResponseEntity.ok(response);

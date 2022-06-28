@@ -13,9 +13,13 @@ public interface ProductService {
 
     List<Product> findAllByUserId(String userId);
 
+    List<Product> filterProduct(String keywords, List<String> types);
+
     void setImageName(String name, String imageList, UUID productID);
 
     void updateInventoryAndSales(UUID productID, int quantity);
+
+    void deleteById(UUID productID);
 
     Map<String, String> getTotalStatistics(String username);
 }

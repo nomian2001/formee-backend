@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
             return "message.common.not.found";
         }
         user.updateProfileFromDTO(dto);
+        userRepo.save(user);
         return "";
     }
 

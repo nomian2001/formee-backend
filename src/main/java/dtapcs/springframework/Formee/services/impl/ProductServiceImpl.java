@@ -1,16 +1,24 @@
 package dtapcs.springframework.Formee.services.impl;
 
+import dtapcs.springframework.Formee.dtos.model.UserDetails;
+import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.entities.Product;
 import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.repositories.inf.ProductRepo;
 import dtapcs.springframework.Formee.services.inf.ProductService;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -33,6 +41,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> filterProduct(String keywords, List<String> types) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+
+        List<Product> productList = productRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
+        Stream<Product> productStream = productList.stream();
+
+        if (StringUtils.hasText(keywords)) {
+            productStream = productStream.filter(product -> product.getName().contains(keywords) || product.getDescription().contains(keywords));
+        }
+
+        return productStream.collect(Collectors.toList());
+    }
+
+    @Override
     public void setImageName(String name, String imageList, UUID productId){
         Product product = productRepo.getById(productId);
         product.setImageName(name);
@@ -48,6 +72,11 @@ public class ProductServiceImpl implements ProductService {
             product.setSales(product.getSales() + quantity);
             productRepo.save(product);
         }
+    }
+
+    @Override
+    public void deleteById(UUID productID) {
+        productRepo.deleteById(productID);
     }
 
     @Override

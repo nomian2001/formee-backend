@@ -43,14 +43,14 @@ public class SendEmailSSL {
         }
 
         try {
-            Message message = new MimeMessage(currentSession);
+            MimeMessage message = new MimeMessage(currentSession);
             message.setFrom(new InternetAddress("from@gmail.com", "Hệ thống Formee"));
             message.setRecipients(
                     Message.RecipientType.TO,
                     InternetAddress.parse(recipients)
             );
-            message.setSubject(title);
-            message.setText(content);
+            message.setSubject(title, "UTF-8");
+            message.setContent(content, "text/plain;charset=UTF-8");
 
             Transport.send(message);
             System.out.println("Email sent to: " + recipients);
