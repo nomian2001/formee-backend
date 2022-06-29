@@ -4,6 +4,7 @@ import dtapcs.springframework.Formee.dtos.model.StatisticsDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.entities.FormeeUser;
 import dtapcs.springframework.Formee.enums.StatisticsType;
+import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
 import dtapcs.springframework.Formee.services.inf.CustomerService;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
@@ -34,9 +35,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public List<StatisticsDTO> getAllStatistics() {
         List<StatisticsDTO> result = new ArrayList<>();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
+        UserDetails userDetails = CommonHelper.getCurrentUser();
         String username = userDetails.getUsername();
 
         // ORDER ("Thống kê đơn hàng"),

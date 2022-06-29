@@ -6,6 +6,7 @@ import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
+import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.services.inf.FormOrderService;
 import dtapcs.springframework.Formee.services.inf.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class FormOrderController extends BaseController {
         Integer pageNumber = request.getPageNumber();
         Integer pageSize = request.getPageSize();
         List<FormOrder> result = formOrderService.filterOrder(request.getOrderStatus(), request.getStartDate(),
-                request.getEndDate(), request.getKeywords(), request.getFormId());
+                request.getEndDate(), request.getKeywords().toLowerCase(), request.getFormId());
         List<FormOrderDTO> dtos = result.stream()
                 .map(FormOrderMapper.INSTANCE::formOrderToFormOrderDTO)
                 .collect(Collectors.toList())
@@ -79,7 +80,7 @@ public class FormOrderController extends BaseController {
     }
 
     @GetMapping("/response/{id}")
-    public ResponseEntity getFormTemplateByID(@PathVariable UUID id) {
+    public ResponseEntity getResponseByID(@PathVariable UUID id) {
         FormOrder result = formOrderService.getById(id);
         FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
         DataResponse response = DataResponse.ok()
@@ -104,9 +105,7 @@ public class FormOrderController extends BaseController {
 
     @PutMapping("/update")
     public ResponseEntity updateOrder(@RequestBody FormOrderDTO order) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
+        UserDetails userDetails = CommonHelper.getCurrentUser();
         if (formService.checkFormPermission(userDetails.getId(), order.getFormId())) {
             FormOrder result = formOrderService.updateOrder(order, false);
             FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);

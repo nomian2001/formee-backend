@@ -23,6 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         else {
             check = customer;
+            check.setTotalOrders(1L);
         }
         customerRepo.save(check);
     }

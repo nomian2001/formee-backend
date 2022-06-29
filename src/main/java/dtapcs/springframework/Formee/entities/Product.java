@@ -1,11 +1,12 @@
 package dtapcs.springframework.Formee.entities;
 
-import dtapcs.springframework.Formee.enums.ProductType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.UUID;
 
 @Data
@@ -40,5 +41,5 @@ public class Product extends Auditable {
 
     private Long sales = 0L;
 
-    private ProductType type;
+    private String typeId;
 }

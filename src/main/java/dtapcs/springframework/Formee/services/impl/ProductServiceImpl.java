@@ -4,7 +4,9 @@ import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.entities.Product;
 import dtapcs.springframework.Formee.enums.OrderStatus;
+import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.repositories.inf.ProductRepo;
+import dtapcs.springframework.Formee.repositories.inf.ProductTypeRepo;
 import dtapcs.springframework.Formee.services.inf.ProductService;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductRepo productRepo;
 
+    @Autowired
+    ProductTypeRepo typeRepo;
+
     @Override
     public Product createProduct(Product product) {
         return productRepo.save(product);
@@ -36,21 +41,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findAllByUserId(String userId) {
-        return productRepo.findAllByUserId(userId);
+    public List<Product> findAllByUser() {
+        UserDetails userDetails = CommonHelper.getCurrentUser();
+        return productRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
     }
 
     @Override
-    public List<Product> filterProduct(String keywords, List<String> types) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-
+    public List<Product> filterProduct(String keywords, String typeId) {
+        UserDetails userDetails = CommonHelper.getCurrentUser();
         List<Product> productList = productRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
         Stream<Product> productStream = productList.stream();
 
         if (StringUtils.hasText(keywords)) {
-            productStream = productStream.filter(product -> product.getName().contains(keywords) || product.getDescription().contains(keywords));
+            productStream = productStream.filter(product -> product.getName().toLowerCase().contains(keywords));
+        }
+        if (StringUtils.hasText(typeId)) {
+            productStream = productStream.filter(product -> product.getTypeId().equals(typeId));
         }
 
         return productStream.collect(Collectors.toList());
@@ -86,8 +92,8 @@ public class ProductServiceImpl implements ProductService {
         result.put("total", String.valueOf(total));
         Long outOfStock = productRepo.countByCreatedByAndInventory(username, 0L);
         result.put("outOfStock", String.valueOf(outOfStock));
-        Long totalInventory = productRepo.countAllInventory(username);
-        result.put("totalInventory", String.valueOf(totalInventory));
+        Long totalTypes = typeRepo.countByCreatedBy(username);
+        result.put("totalTypes", totalTypes != null ? String.valueOf(totalTypes) : "0");
         return result;
     }
 }

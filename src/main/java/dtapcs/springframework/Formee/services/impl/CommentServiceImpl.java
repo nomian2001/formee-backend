@@ -6,6 +6,7 @@ import dtapcs.springframework.Formee.entities.Comment;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
+import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.helper.SendEmailRunnable;
 import dtapcs.springframework.Formee.helper.SendEmailSSL;
 import dtapcs.springframework.Formee.repositories.inf.CommentRepo;
@@ -44,9 +45,7 @@ public class CommentServiceImpl implements CommentService {
 
             if (isRequest) {
                 // send email
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                Object principal = authentication.getPrincipal();
-                UserDetails userDetails = (UserDetails) principal;
+                UserDetails userDetails = CommonHelper.getCurrentUser();
                 String recipient = userRepo.getEmailByUsername(order.getCreatedBy());
                 String title = "";
                 String content = "";

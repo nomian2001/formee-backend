@@ -4,12 +4,9 @@ import dtapcs.springframework.Formee.dtos.model.CommentDTO;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
-import dtapcs.springframework.Formee.entities.Customer;
-import dtapcs.springframework.Formee.entities.Form;
-import dtapcs.springframework.Formee.entities.FormOrder;
-import dtapcs.springframework.Formee.entities.Product;
+import dtapcs.springframework.Formee.entities.*;
 import dtapcs.springframework.Formee.enums.OrderStatus;
-import dtapcs.springframework.Formee.enums.ProductType;
+import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.helper.ExcelHelper;
 import dtapcs.springframework.Formee.repositories.inf.FormOrderRepo;
 import dtapcs.springframework.Formee.repositories.inf.FormRepo;
@@ -23,8 +20,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -39,20 +34,27 @@ import java.util.stream.Stream;
 public class FormOrderServiceImpl implements FormOrderService {
     @Autowired
     FormRepo formRepo;
+
     @Autowired
     FormOrderRepo formOrderRepo;
+
     @Autowired
     UserRepo userRepo;
+
     @Autowired
     FormService formService;
+
     @Autowired
     CommentService commentService;
+
     @Autowired
     CustomerService customerService;
-    @Autowired
-    ExcelService fileService;
+
     @Autowired
     ProductService productService;
+
+    @Autowired
+    ProductTypeService productTypeService;
 
     @Override
     public FormOrder createOrder(FormOrderDTO dto) {
@@ -101,16 +103,14 @@ public class FormOrderServiceImpl implements FormOrderService {
         customer.setName(response.getString(1));
         customer.setAddress(response.get(2).toString());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
+        UserDetails userDetails = CommonHelper.getCurrentUser();
         customer.setUserId(userDetails.getId());
         customerService.createCustomer(customer);
     }
 
     @Override
     public List<FormOrder> filterOrder(List<OrderStatus> orderStatus, String start, String end, String keywords, UUID formId) {
-        List<FormOrder> orderList = new ArrayList<>();
+        List<FormOrder> orderList;
         if (formId != null) {
             Form form = formRepo.findById(formId).orElse(null);
             if (form != null) {
@@ -126,8 +126,8 @@ public class FormOrderServiceImpl implements FormOrderService {
         if (StringUtils.hasText(keywords)) {
             orderStream = orderStream.filter(order -> {
                 JSONArray response = new JSONArray(order.getResponse());
-                return order.getOrderName().contains(keywords) || response.getString(0).contains(keywords)
-                        || response.getString(1).contains(keywords) || response.getString(2).contains(keywords);
+                return order.getOrderName().toLowerCase().contains(keywords) || response.getString(0).toLowerCase().contains(keywords)
+                        || response.getString(1).toLowerCase().contains(keywords) || response.getString(2).toLowerCase().contains(keywords);
             });
         }
         if (StringUtils.hasText(start)) {
@@ -178,9 +178,7 @@ public class FormOrderServiceImpl implements FormOrderService {
     }
 
     private List<FormOrder> findAllOrders() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
+        UserDetails userDetails = CommonHelper.getCurrentUser();
         return formOrderRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
     }
 
@@ -252,7 +250,7 @@ public class FormOrderServiceImpl implements FormOrderService {
                         costTotal += obj.getInt("costPrice") * obj.getInt("quantity");
                     }
                 }
-                monthSaleTotal += ((total * (100 - order.getDiscount()) ) / 100);
+                monthSaleTotal += ((total * (100 - order.getDiscount())) / 100);
                 monthCostTotal += costTotal;
             }
             data.put(monthSaleTotal - monthCostTotal);
@@ -270,13 +268,14 @@ public class FormOrderServiceImpl implements FormOrderService {
             JSONArray products = new JSONArray(response.get(4).toString()); // actual response
             for (int i = 0; i < products.length(); ++i) {
                 JSONObject obj = products.getJSONObject(i);
-                if (obj.has("type")) {
-                    ProductType type = ProductType.valueOf(obj.getString("type"));
-                    if (result.containsKey(type.getName())) {
-                        result.put(type.getName(), String.valueOf(Integer.parseInt(result.get(type.getName())) + 1));
-                    }
-                    else {
-                        result.put(type.getName(), "1");
+                if (obj.has("typeId")) {
+                    ProductType type = productTypeService.findById(UUID.fromString(obj.getString("typeId")));
+                    if (type != null) {
+                        if (result.containsKey(type.getName())) {
+                            result.put(type.getName(), String.valueOf(Integer.parseInt(result.get(type.getName())) + 1));
+                        } else {
+                            result.put(type.getName(), "1");
+                        }
                     }
                 }
             }
@@ -295,13 +294,17 @@ public class FormOrderServiceImpl implements FormOrderService {
                 JSONObject obj = products.getJSONObject(i);
                 if (obj.has("uuid")) {
                     Product product = productService.findById(UUID.fromString(obj.getString("uuid")));
-                    if (!result.containsKey(product.getName())) {
-                        result.put(product.getName(), String.valueOf(product.getSales()));
+                    if (product != null) {
+                        if (!result.containsKey(product.getName())) {
+                            result.put(product.getName(), String.valueOf(product.getSales()));
+                        }
                     }
                 }
             }
         }
-        return result;
+        return result.entrySet().stream()
+                .sorted(Comparator.comparingLong(e -> Long.parseLong(e.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     @Override

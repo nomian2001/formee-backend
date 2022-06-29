@@ -9,5 +9,5 @@ public class ProductSearchRequest {
     private String keywords;
     private Integer pageNumber;
     private Integer pageSize;
-    private List<String> types;
+    private String typeId;
 }

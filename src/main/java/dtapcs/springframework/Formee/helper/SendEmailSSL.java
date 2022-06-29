@@ -49,6 +49,7 @@ public class SendEmailSSL {
                     Message.RecipientType.TO,
                     InternetAddress.parse(recipients)
             );
+            message.setHeader("Content-Type", "text/plain; charset=UTF-8");
             message.setSubject(title, "UTF-8");
             message.setContent(content, "text/plain;charset=UTF-8");
 

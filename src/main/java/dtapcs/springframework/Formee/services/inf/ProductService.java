@@ -11,9 +11,9 @@ public interface ProductService {
 
     Product findById(UUID productID);
 
-    List<Product> findAllByUserId(String userId);
+    List<Product> findAllByUser();
 
-    List<Product> filterProduct(String keywords, List<String> types);
+    List<Product> filterProduct(String keywords, String typeId);
 
     void setImageName(String name, String imageList, UUID productID);
 

@@ -26,4 +26,8 @@ public class UserDetails {
                 user.getUsername(),
                 authorities);
     }
+
+    public UserDetails(String username) {
+        this.username = username;
+    }
 }

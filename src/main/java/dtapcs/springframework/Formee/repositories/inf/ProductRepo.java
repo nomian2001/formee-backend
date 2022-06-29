@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface ProductRepo extends JpaRepository<Product, UUID> {
-    List<Product> findAllByUserId(String formId);
 
     List<Product> findAllByCreatedByOrderByCreatedDateDesc(String username);
 
