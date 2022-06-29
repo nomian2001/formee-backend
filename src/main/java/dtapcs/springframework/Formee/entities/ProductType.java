@@ -24,4 +24,6 @@ public class ProductType extends Auditable {
     private String name;
 
     private String color;
+
+    private String backgroundColor;
 }
