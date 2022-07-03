@@ -16,4 +16,6 @@ public class FormDTO extends Auditable {
     private String templateId;
     private ResponsePermission responsePermission;
     private String layoutJson;
+    private String color;
+    private String imagePath;
 }

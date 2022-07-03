@@ -81,6 +81,11 @@ public class CommentServiceImpl implements CommentService {
                 orderRepo.save(order);
             }
 
+            UserDetails userDetails = CommonHelper.getCurrentUser();
+            if (userDetails.getUsername().equals("anonymousUser")) {
+                comment.setCreatedBy(dto.getCustomerName());
+            }
+
             return commentRepo.save(comment);
         }
         return null;

@@ -65,9 +65,9 @@ public class FormController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/recent/{userId}")
-    public ResponseEntity getRecentForms(@PathVariable String userId) {
-        List<Form> result = formService.getRecentForms(userId);
+    @GetMapping("/recent")
+    public ResponseEntity getRecentForms() {
+        List<Form> result = formService.getRecentForms();
         List<FormDTO> resultDTO = result.stream().map(FormMapper.INSTANCE::FormToFormDTO).collect(Collectors.toList());
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
@@ -76,9 +76,9 @@ public class FormController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/find-all/{userId}")
-    public ResponseEntity getFormsByUserId(@PathVariable String userId) {
-        List<Form> result = formService.getFormsByUserId(userId);
+    @GetMapping("/find-all")
+    public ResponseEntity getFormsByUser() {
+        List<Form> result = formService.getFormsByUser();
         List<FormDTO> resultDTO = result.stream().map(FormMapper.INSTANCE::FormToFormDTO).collect(Collectors.toList());
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))

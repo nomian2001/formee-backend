@@ -81,6 +81,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Boolean checkInventory(UUID productId, int quantity) {
+        Product product = productRepo.findById(productId).orElse(null);
+        if (product != null) {
+            return quantity <= product.getInventory();
+        }
+        return false;
+    }
+
+    @Override
     public void deleteById(UUID productID) {
         productRepo.deleteById(productID);
     }

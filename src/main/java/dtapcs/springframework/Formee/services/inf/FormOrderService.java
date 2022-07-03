@@ -23,7 +23,7 @@ public interface FormOrderService {
 
     FormOrder updateOrder(FormOrderDTO dto, Boolean statusOnly);
 
-    FormOrder duplicateOrder(UUID formOrderId);
+    String duplicateOrder(UUID formOrderId);
 
     List<FormOrder> filterOrder(List<OrderStatus> orderStatus, String startDate, String endDate, String keywords, UUID formId);
 

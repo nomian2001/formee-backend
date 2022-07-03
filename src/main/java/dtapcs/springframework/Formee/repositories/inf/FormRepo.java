@@ -18,4 +18,6 @@ public interface FormRepo extends JpaRepository<Form, UUID> {
     List<Form> getRecentForms(String userId);
 
     List<Form> findAllByUserId(String userId);
+
+    List<Form> findAllByCreatedByOrderByCreatedDateDesc(String username);
 }

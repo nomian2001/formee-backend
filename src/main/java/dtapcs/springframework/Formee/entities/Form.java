@@ -20,6 +20,7 @@ public class Form extends Auditable {
     @ToString.Exclude
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "formId")
     Set<FormOrder> formOrders;
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -34,6 +35,10 @@ public class Form extends Auditable {
     private String userId;
 
     private String templateId;
+
+    private String color;
+
+    private String imagePath;
 
     private ResponsePermission responsePermission;
 
@@ -61,6 +66,8 @@ public class Form extends Auditable {
         templateId = dto.getTemplateId();
         layoutJson = dto.getLayoutJson();
         responsePermission = dto.getResponsePermission();
+        color = dto.getColor();
+        imagePath = dto.getImagePath();
     }
 
     public void AddOrder(FormOrder order) {

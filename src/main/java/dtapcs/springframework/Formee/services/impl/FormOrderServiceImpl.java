@@ -91,7 +91,6 @@ public class FormOrderServiceImpl implements FormOrderService {
                 productService.updateInventoryAndSales(UUID.fromString(obj.getString("uuid")), obj.getInt("quantity"));
             }
 
-
             return result;
         }
         return null;
@@ -127,7 +126,7 @@ public class FormOrderServiceImpl implements FormOrderService {
             orderStream = orderStream.filter(order -> {
                 JSONArray response = new JSONArray(order.getResponse());
                 return order.getOrderName().toLowerCase().contains(keywords) || response.getString(0).toLowerCase().contains(keywords)
-                        || response.getString(1).toLowerCase().contains(keywords) || response.getString(2).toLowerCase().contains(keywords);
+                        || response.getString(1).toLowerCase().contains(keywords);
             });
         }
         if (StringUtils.hasText(start)) {
@@ -218,16 +217,39 @@ public class FormOrderServiceImpl implements FormOrderService {
     }
 
     @Override
-    public FormOrder duplicateOrder(UUID formOrderId) {
+    public String duplicateOrder(UUID formOrderId) {
         FormOrder order = formOrderRepo.findById(formOrderId).orElse(null);
         if (order == null) {
-            return null;
+            return "message.common.not.found";
         }
+        JSONArray response = new JSONArray(order.getResponse());
+
+        // check inventory
+        JSONArray products = new JSONArray(response.get(4).toString());
+        for (int i = 0; i < products.length(); ++i) {
+            JSONObject obj = products.getJSONObject(i);
+            UUID productId = UUID.fromString(obj.getString("uuid"));
+            int quantity = obj.getInt("quantity");
+            if (productService.checkInventory(productId, quantity)) {
+                productService.updateInventoryAndSales(productId, quantity);
+            }
+            else {
+                return "message.order.duplicate.not.enough.inventory";
+            }
+        }
+
         FormOrder newOrder = new FormOrder();
         newOrder.duplicate(order);
-        // save customer info
-        createCustomer(new JSONArray(newOrder.getResponse()));
-        return formOrderRepo.save(newOrder);
+        newOrder.setStatus(OrderStatus.PENDING);
+        FormOrder result = formOrderRepo.save(newOrder);
+
+        // add new comment
+        CommentDTO comment = new CommentDTO();
+        comment.setMessage("Đã tạo đơn hàng.");
+        comment.setOrderId(result.getUuid());
+        commentService.createComment(comment, false, false);
+
+        return "";
     }
 
     @Override
@@ -272,9 +294,9 @@ public class FormOrderServiceImpl implements FormOrderService {
                     ProductType type = productTypeService.findById(UUID.fromString(obj.getString("typeId")));
                     if (type != null) {
                         if (result.containsKey(type.getName())) {
-                            result.put(type.getName(), String.valueOf(Integer.parseInt(result.get(type.getName())) + 1));
+                            result.put(type.getName(), String.valueOf(Integer.parseInt(result.get(type.getName())) + Integer.parseInt(obj.get("quantity").toString())));
                         } else {
-                            result.put(type.getName(), "1");
+                            result.put(type.getName(), obj.get("quantity").toString());
                         }
                     }
                 }

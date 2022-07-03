@@ -19,6 +19,8 @@ public interface ProductService {
 
     void updateInventoryAndSales(UUID productID, int quantity);
 
+    Boolean checkInventory(UUID productID, int quantity);
+
     void deleteById(UUID productID);
 
     Map<String, String> getTotalStatistics(String username);

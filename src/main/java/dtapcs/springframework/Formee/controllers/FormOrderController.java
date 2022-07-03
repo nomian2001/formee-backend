@@ -14,11 +14,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,12 +51,17 @@ public class FormOrderController extends BaseController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/duplicate/{orderId}")
     public ResponseEntity duplicateOrder(@PathVariable UUID orderId) {
-        FormOrder result = formOrderService.duplicateOrder(orderId);
-        FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
-        DataResponse response = DataResponse.ok()
-                .withMessage(super.getMessage("message.common.success"))
-                .withResult(resultDTO)
-                .build();
+        String result = formOrderService.duplicateOrder(orderId);
+        DataResponse response;
+        if (StringUtils.hasText(result)) {
+            response = DataResponse.withCode(HttpStatus.INSUFFICIENT_STORAGE.value())
+                    .withMessage(super.getMessage(result))
+                    .build();
+        } else {
+            response = DataResponse.ok()
+                    .withMessage(super.getMessage("message.common.success"))
+                    .build();
+        }
         return ResponseEntity.ok(response);
     }
 
@@ -106,7 +111,7 @@ public class FormOrderController extends BaseController {
     @PutMapping("/update")
     public ResponseEntity updateOrder(@RequestBody FormOrderDTO order) {
         UserDetails userDetails = CommonHelper.getCurrentUser();
-        if (formService.checkFormPermission(userDetails.getId(), order.getFormId())) {
+        if (formService.checkFormPermission(userDetails.getUsername(), order.getFormId())) {
             FormOrder result = formOrderService.updateOrder(order, false);
             FormOrderDTO resultDTO = FormOrderMapper.INSTANCE.formOrderToFormOrderDTO(result);
             DataResponse response;

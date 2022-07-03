@@ -3,8 +3,10 @@ package dtapcs.springframework.Formee.services.impl;
 import dtapcs.springframework.Formee.dtos.mapper.FormTemplateSummaryMapper;
 import dtapcs.springframework.Formee.dtos.model.FormDTO;
 import dtapcs.springframework.Formee.dtos.model.FormTemplateSummaryDTO;
+import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.entities.Form;
 import dtapcs.springframework.Formee.enums.ResponsePermission;
+import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.repositories.inf.FormRepo;
 import dtapcs.springframework.Formee.repositories.inf.FormTemplateRepo;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
@@ -49,25 +51,26 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public List<Form> getRecentForms(String userId) {
-        List<Form> result = formRepo.findAllByUserId(userId);
-        return result;
+    public List<Form> getRecentForms() {
+        UserDetails userDetails = CommonHelper.getCurrentUser();
+        return formRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
     }
 
     @Override
-    public List<Form> getFormsByUserId(String userId) {
-        return formRepo.findAllByUserId(userId);
+    public List<Form> getFormsByUser() {
+        UserDetails userDetails = CommonHelper.getCurrentUser();
+        return formRepo.findAllByCreatedByOrderByCreatedDateDesc(userDetails.getUsername());
     }
 
     @Override
-    public Boolean checkFormPermission(String userId, UUID formId) {
+    public Boolean checkFormPermission(String username, UUID formId) {
         Optional<Form> check = formRepo.findById(formId);
         if (check.isPresent()) {
             Form form = check.get();
             if (form.getResponsePermission() == ResponsePermission.AllowAll) {
                 return true;
             } else {
-                return userId.equals(form.getUserId());
+                return username.equals(form.getCreatedBy());
             }
         } else {
             return false;

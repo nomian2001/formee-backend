@@ -10,7 +10,7 @@ public class CommonHelper {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if (principal.equals("anonymousUser")) {
-            return new UserDetails("Ẩn danh");
+            return new UserDetails("anonymousUser");
         }
         return (UserDetails) principal;
     }
