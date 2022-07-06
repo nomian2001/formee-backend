@@ -34,6 +34,8 @@ public class FormOrder extends Auditable {
 
     private Integer discount;
 
+    private Long shippingFee;
+
     private Boolean confirmed;
 
     private Boolean requested;
@@ -58,6 +60,7 @@ public class FormOrder extends Auditable {
 //        requested = dto.getRequested();
         discount = dto.getDiscount();
         status = dto.getStatus();
+        shippingFee = dto.getShippingFee();
     }
 
     public void duplicate(FormOrder order) {
@@ -66,6 +69,7 @@ public class FormOrder extends Auditable {
         discount = order.getDiscount();
         status = OrderStatus.PENDING;
         formId = order.getFormId();
+        shippingFee = order.getShippingFee();
     }
 
     public void UpdateFormOrder(FormOrderDTO dto, Form form) {

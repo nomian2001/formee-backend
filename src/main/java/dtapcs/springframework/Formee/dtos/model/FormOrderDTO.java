@@ -19,5 +19,6 @@ public class FormOrderDTO extends Auditable {
     private Boolean confirmed;
     private Boolean requested;
     private Integer discount;
+    private Long shippingFee;
     List<CommentDTO> comments;
 }

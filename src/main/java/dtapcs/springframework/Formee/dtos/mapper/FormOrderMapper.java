@@ -47,5 +47,6 @@ public interface FormOrderMapper {
     @Mapping(source = "confirmed", target = "confirmed")
     @Mapping(source = "requested", target = "requested")
     @Mapping(source = "discount", target = "discount")
+    @Mapping(source = "shippingFee", target = "shippingFee")
     FormOrderDTO formOrderToFormOrderDTO(FormOrder formOrder);
 }
