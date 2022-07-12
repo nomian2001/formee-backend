@@ -18,11 +18,52 @@ public interface FormOrderRepo extends JpaRepository<FormOrder, UUID> {
     @Query(nativeQuery = true,
             value = "SELECT * FROM form_order " +
                     "WHERE created_by = :userName " +
+                    "AND EXTRACT (YEAR FROM created_date) = :inYear ")
+    List<FormOrder> findOrderOfUserByYear(@Param("userName") String userName,
+                                          @Param("inYear") int year);
+
+
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM form_order " +
+                    "WHERE created_by = :userName " +
                     "AND EXTRACT (MONTH FROM created_date) = :inMonth " +
                     "AND EXTRACT (YEAR FROM created_date) = :inYear ")
-    List<FormOrder> findOrderOfUserByMonth(@Param("userName") String userName, @Param("inMonth") int month, @Param("inYear") int year);
+    List<FormOrder> findOrderOfUserByMonth(@Param("userName") String userName,
+                                           @Param("inMonth") int month,
+                                           @Param("inYear") int year);
 
-    Long countByCreatedBy(String createdBy);
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM form_order " +
+                    "WHERE created_by = :userName " +
+                    "AND EXTRACT (MONTH FROM created_date) = :inMonth " +
+                    "AND EXTRACT (YEAR FROM created_date) = :inYear " +
+                    "AND to_char(created_date, 'W') = :inWeek ")
+    List<FormOrder> findOrderOfUserByWeek(@Param("userName") String userName,
+                                          @Param("inMonth") int month,
+                                          @Param("inYear") int year,
+                                          @Param("inWeek") String week);
 
-    Long countByCreatedByAndStatus(String createdBy, OrderStatus status);
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM form_order " +
+                    "WHERE created_by = :userName " +
+                    "AND EXTRACT (MONTH FROM created_date) = :inMonth " +
+                    "AND EXTRACT (YEAR FROM created_date) = :inYear " +
+                    "AND EXTRACT (DAY FROM created_date) = :inDay ")
+    List<FormOrder> findOrderOfUserByDayOfWeek(@Param("userName") String userName,
+                                               @Param("inMonth") int month,
+                                               @Param("inYear") int year,
+                                               @Param("inDay") int day);
+
+    @Query(nativeQuery = true,
+            value = "SELECT COUNT(*) FROM form_order " +
+                    "WHERE created_by = :createdBy " +
+                    "AND created_date >= (NOW() - (:interval)\\:\\:interval) ")
+    Long countByCreatedBy(String createdBy, String interval);
+
+    @Query(nativeQuery = true,
+            value = "SELECT COUNT(*) FROM form_order " +
+                    "WHERE created_by = :createdBy " +
+                    "AND created_date >= (NOW() - (:interval)\\:\\:interval) " +
+                    "AND status = :statusIndex ")
+    Long countByCreatedByAndStatus(String createdBy, String interval, int statusIndex);
 }

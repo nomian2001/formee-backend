@@ -5,6 +5,7 @@ import dtapcs.springframework.Formee.dtos.model.OrderStatisticsDTO;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.enums.OrderStatus;
+import dtapcs.springframework.Formee.enums.PeriodType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.core.io.Resource;
@@ -29,13 +30,13 @@ public interface FormOrderService {
 
     ResponseEntity<Resource> export(FormOrderSearchRequest request);
 
-    Map<String, String> getRevenueStatistics(String userName, int year);
+    Map<String, String> getRevenueStatistics(String userName, int year, PeriodType type);
 
-    Map<String, String> getCategoryStatistics(String userName);
+    Map<String, String> getCategoryStatistics(String userName, PeriodType type);
 
     Map<String, String> getProductStatistics(String userName);
 
-    Map<String, String> getCustomerStatistics(String userName, int year);
+    Map<String, String> getCustomerStatistics(String userName, int year, PeriodType type);
 
-    Map<String, String> getTotalStatistics(String username);
+    Map<String, String> getTotalStatistics(String username, PeriodType type);
 }

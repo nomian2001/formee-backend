@@ -6,6 +6,7 @@ import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.*;
 import dtapcs.springframework.Formee.enums.OrderStatus;
+import dtapcs.springframework.Formee.enums.PeriodType;
 import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.helper.ExcelHelper;
 import dtapcs.springframework.Formee.repositories.inf.FormOrderRepo;
@@ -232,8 +233,7 @@ public class FormOrderServiceImpl implements FormOrderService {
             int quantity = obj.getInt("quantity");
             if (productService.checkInventory(productId, quantity)) {
                 productService.updateInventoryAndSales(productId, quantity);
-            }
-            else {
+            } else {
                 return "message.order.duplicate.not.enough.inventory";
             }
         }
@@ -253,55 +253,157 @@ public class FormOrderServiceImpl implements FormOrderService {
     }
 
     @Override
-    public Map<String, String> getRevenueStatistics(String userName, int year) {
+    public Map<String, String> getRevenueStatistics(String userName, int year, PeriodType type) {
         Map<String, String> result = new HashMap<>();
-        JSONArray data = new JSONArray();
-        for (int month = 1; month <= 12; ++month) {
-            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName, month, year);
-            double monthSaleTotal = 0;
-            double monthCostTotal = 0;
-            for (FormOrder order : orderOfCurrentMonth) {
-                double total = 0;
-                double costTotal = 0;
-                JSONArray response = new JSONArray(order.getResponse());
-                JSONArray products = new JSONArray(response.get(4).toString()); // actual response
-                for (int i = 0; i < products.length(); ++i) {
-                    JSONObject obj = products.getJSONObject(i);
-                    if (obj.has("productPrice") && obj.has("quantity") && obj.has("costPrice")) {
-                        total += obj.getInt("productPrice") * obj.getInt("quantity");
-                        costTotal += obj.getInt("costPrice") * obj.getInt("quantity");
+        JSONArray income = new JSONArray();
+        JSONArray revenue = new JSONArray();
+
+        Calendar calendar = Calendar.getInstance();
+        int numOfWeeks = calendar.getActualMaximum(Calendar.WEEK_OF_MONTH);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        switch (type) {
+            case WEEK:
+                calendar.set(Calendar.DAY_OF_WEEK, 1);
+                int startDate = calendar.get(Calendar.DAY_OF_MONTH) - 6;
+                for (int day = startDate; day < (startDate + 7); ++day) {
+                    List<FormOrder> orderOfCurrentWeek = formOrderRepo
+                            .findOrderOfUserByDayOfWeek(userName, currentMonth, currentYear, day);
+                    double weekSaleTotal = 0;
+                    double weekCostTotal = 0;
+                    for (FormOrder order : orderOfCurrentWeek) {
+                        double total = 0;
+                        double costTotal = 0;
+                        JSONArray response = new JSONArray(order.getResponse());
+                        JSONArray products = new JSONArray(response.get(4).toString()); // actual response
+                        for (int i = 0; i < products.length(); ++i) {
+                            JSONObject obj = products.getJSONObject(i);
+                            if (obj.has("productPrice") && obj.has("quantity") && obj.has("costPrice")) {
+                                total += obj.getInt("productPrice") * obj.getInt("quantity");
+                                costTotal += obj.getInt("costPrice") * obj.getInt("quantity");
+                            }
+                        }
+                        weekSaleTotal += ((total * (100 - order.getDiscount())) / 100);
+                        weekCostTotal += costTotal;
                     }
+                    income.put(weekSaleTotal);
+                    revenue.put(weekSaleTotal - weekCostTotal);
                 }
-                monthSaleTotal += ((total * (100 - order.getDiscount())) / 100);
-                monthCostTotal += costTotal;
-            }
-            data.put(monthSaleTotal - monthCostTotal);
+                JSONObject objWeek = new JSONObject().put("income", income).put("revenue", revenue);
+                result.put(String.valueOf(year), objWeek.toString());
+                break;
+            case MONTH:
+                for (int week = 1; week <= numOfWeeks; ++week) {
+                    List<FormOrder> orderOfCurrentMonth = formOrderRepo
+                            .findOrderOfUserByWeek(userName, currentMonth, currentYear, String.valueOf(week));
+                    double weekSaleTotal = 0;
+                    double weekCostTotal = 0;
+                    for (FormOrder order : orderOfCurrentMonth) {
+                        double total = 0;
+                        double costTotal = 0;
+                        JSONArray response = new JSONArray(order.getResponse());
+                        JSONArray products = new JSONArray(response.get(4).toString()); // actual response
+                        for (int i = 0; i < products.length(); ++i) {
+                            JSONObject obj = products.getJSONObject(i);
+                            if (obj.has("productPrice") && obj.has("quantity") && obj.has("costPrice")) {
+                                total += obj.getInt("productPrice") * obj.getInt("quantity");
+                                costTotal += obj.getInt("costPrice") * obj.getInt("quantity");
+                            }
+                        }
+                        weekSaleTotal += ((total * (100 - order.getDiscount())) / 100);
+                        weekCostTotal += costTotal;
+                    }
+                    income.put(weekSaleTotal);
+                    revenue.put(weekSaleTotal - weekCostTotal);
+                }
+                JSONObject objMonth = new JSONObject().put("income", income).put("revenue", revenue);
+                result.put(String.valueOf(year), objMonth.toString());
+                break;
+            case YEAR:
+                for (int month = 1; month <= 12; ++month) {
+                    List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName, month, year);
+                    double monthSaleTotal = 0;
+                    double monthCostTotal = 0;
+                    for (FormOrder order : orderOfCurrentMonth) {
+                        double total = 0;
+                        double costTotal = 0;
+                        JSONArray response = new JSONArray(order.getResponse());
+                        JSONArray products = new JSONArray(response.get(4).toString()); // actual response
+                        for (int i = 0; i < products.length(); ++i) {
+                            JSONObject obj = products.getJSONObject(i);
+                            if (obj.has("productPrice") && obj.has("quantity") && obj.has("costPrice")) {
+                                total += obj.getInt("productPrice") * obj.getInt("quantity");
+                                costTotal += obj.getInt("costPrice") * obj.getInt("quantity");
+                            }
+                        }
+                        monthSaleTotal += ((total * (100 - order.getDiscount())) / 100);
+                        monthCostTotal += costTotal;
+                    }
+                    income.put(monthSaleTotal);
+                    revenue.put(monthSaleTotal - monthCostTotal);
+                }
+                JSONObject objYear = new JSONObject().put("income", income).put("revenue", revenue);
+                result.put(String.valueOf(year), objYear.toString());
+                break;
         }
-        result.put(String.valueOf(year), data.toString());
         return result;
     }
 
     @Override
-    public Map<String, String> getCategoryStatistics(String userName) {
+    public Map<String, String> getCategoryStatistics(String userName, PeriodType type) {
         Map<String, String> result = new HashMap<>();
-        List<FormOrder> orderOfCurrentMonth = formOrderRepo.findAllByCreatedByOrderByCreatedDateDesc(userName);
-        for (FormOrder order : orderOfCurrentMonth) {
+        JSONObject sales = new JSONObject();
+        JSONObject income = new JSONObject();
+        JSONObject revenue = new JSONObject();
+
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentWeek = calendar.get(Calendar.WEEK_OF_MONTH);
+        List<FormOrder> orderList = new ArrayList<>();
+
+        switch (type) {
+            case WEEK:
+                orderList = formOrderRepo.findOrderOfUserByWeek(userName, currentMonth, currentYear, String.valueOf(currentWeek));
+                break;
+            case MONTH:
+                orderList = formOrderRepo.findOrderOfUserByMonth(userName, currentMonth, currentYear);
+                break;
+            case YEAR:
+                orderList = formOrderRepo.findOrderOfUserByYear(userName, currentYear);
+                break;
+        }
+
+        for (FormOrder order : orderList) {
             JSONArray response = new JSONArray(order.getResponse());
             JSONArray products = new JSONArray(response.get(4).toString()); // actual response
             for (int i = 0; i < products.length(); ++i) {
                 JSONObject obj = products.getJSONObject(i);
-                if (obj.has("typeId")) {
-                    ProductType type = productTypeService.findById(UUID.fromString(obj.getString("typeId")));
-                    if (type != null) {
-                        if (result.containsKey(type.getName())) {
-                            result.put(type.getName(), String.valueOf(Integer.parseInt(result.get(type.getName())) + Integer.parseInt(obj.get("quantity").toString())));
+                if (obj.has("typeId") && !obj.get("typeId").toString().equals("null")) {
+                    ProductType productType = productTypeService.findById(UUID.fromString(obj.getString("typeId")));
+                    if (productType != null) {
+                        String typeName = productType.getName();
+                        Integer quantity = Integer.parseInt(obj.get("quantity").toString());
+                        Integer productPrice = Integer.parseInt(obj.get("productPrice").toString());
+                        Integer costPrice = Integer.parseInt(obj.get("costPrice").toString());
+                        if (sales.has(productType.getName())) {
+                            sales.put(typeName, Integer.parseInt(sales.get(typeName).toString()) + quantity);
+                            income.put(typeName, Integer.parseInt(income.get(typeName).toString()) + (quantity * productPrice));
+                            revenue.put(typeName, Integer.parseInt(revenue.get(typeName).toString()) + (quantity * (productPrice - costPrice)));
                         } else {
-                            result.put(type.getName(), obj.get("quantity").toString());
+                            sales.put(typeName, quantity);
+                            income.put(typeName, quantity * productPrice);
+                            revenue.put(typeName, quantity * (productPrice - costPrice));
                         }
                     }
                 }
             }
         }
+
+        result.put("sales", sales.toString());
+        result.put("income", income.toString());
+        result.put("revenue", revenue.toString());
         return result;
     }
 
@@ -330,33 +432,87 @@ public class FormOrderServiceImpl implements FormOrderService {
     }
 
     @Override
-    public Map<String, String> getCustomerStatistics(String userName, int year) {
+    public Map<String, String> getCustomerStatistics(String userName, int year, PeriodType type) {
         Map<String, String> result = new HashMap<>();
         JSONArray data = new JSONArray();
-        for (int month = 1; month <= 12; ++month) {
-            List<String> phoneList = new ArrayList<>();
-            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByMonth(userName, month, year);
-            for (FormOrder order : orderOfCurrentMonth) {
-                JSONArray response = new JSONArray(order.getResponse());
-                String phone = response.get(0).toString();
-                if (!phoneList.contains(phone)) {
-                    phoneList.add(phone); // phone number is unique to each customer
+
+        Calendar calendar = Calendar.getInstance();
+        int numOfWeeks = calendar.getActualMaximum(Calendar.WEEK_OF_MONTH);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        switch (type) {
+            case WEEK:
+                calendar.set(Calendar.DAY_OF_WEEK, 1);
+                int startDate = calendar.get(Calendar.DAY_OF_MONTH) - 6;
+                for (int day = startDate; day < (startDate + 7); ++day) {
+                    List<String> phoneList = new ArrayList<>();
+                    List<FormOrder> orderOfCurrentWeek = formOrderRepo.findOrderOfUserByDayOfWeek(userName, currentMonth, currentYear, day);
+                    for (FormOrder order : orderOfCurrentWeek) {
+                        JSONArray response = new JSONArray(order.getResponse());
+                        String phone = response.get(0).toString();
+                        if (!phoneList.contains(phone)) {
+                            phoneList.add(phone); // phone number is unique to each customer
+                        }
+                    }
+                    data.put(phoneList.size());
                 }
-            }
-            data.put(phoneList.size());
+                break;
+            case MONTH:
+                for (int week = 1; week <= numOfWeeks; ++week) {
+                    List<String> phoneList = new ArrayList<>();
+                    List<FormOrder> orderOfCurrentMonth = formOrderRepo.findOrderOfUserByWeek(userName, currentMonth, currentYear, String.valueOf(week));
+                    for (FormOrder order : orderOfCurrentMonth) {
+                        JSONArray response = new JSONArray(order.getResponse());
+                        String phone = response.get(0).toString();
+                        if (!phoneList.contains(phone)) {
+                            phoneList.add(phone); // phone number is unique to each customer
+                        }
+                    }
+                    data.put(phoneList.size());
+                }
+                break;
+            case YEAR:
+                for (int month = 1; month <= 12; ++month) {
+                    List<String> phoneList = new ArrayList<>();
+                    List<FormOrder> orderOfCurrentYear = formOrderRepo.findOrderOfUserByMonth(userName, month, year);
+                    for (FormOrder order : orderOfCurrentYear) {
+                        JSONArray response = new JSONArray(order.getResponse());
+                        String phone = response.get(0).toString();
+                        if (!phoneList.contains(phone)) {
+                            phoneList.add(phone); // phone number is unique to each customer
+                        }
+                    }
+                    data.put(phoneList.size());
+                }
+                break;
         }
+
+//        for (int month = 1; month <= 12; ++month) {
+//            List<String> phoneList = new ArrayList<>();
+//            List<FormOrder> orderOfCurrentMonth = formOrderRepo.findAllByCreatedByOrderByCreatedDateDesc(userName);
+//            for (FormOrder order : orderOfCurrentMonth) {
+//                JSONArray response = new JSONArray(order.getResponse());
+//                String phone = response.get(0).toString();
+//                if (!phoneList.contains(phone)) {
+//                    phoneList.add(phone); // phone number is unique to each customer
+//                }
+//            }
+//            data.put(phoneList.size());
+//        }
         result.put(String.valueOf(year), data.toString());
         return result;
     }
 
     @Override
-    public Map<String, String> getTotalStatistics(String username) {
+    public Map<String, String> getTotalStatistics(String username, PeriodType type) {
         Map<String, String> result = new HashMap<>();
-        Long total = formOrderRepo.countByCreatedBy(username);
+        String interval = type.getName();
+        Long total = formOrderRepo.countByCreatedBy(username, interval);
         result.put("total", String.valueOf(total));
-        Long completed = formOrderRepo.countByCreatedByAndStatus(username, OrderStatus.COMPLETED);
+        Long completed = formOrderRepo.countByCreatedByAndStatus(username, interval, OrderStatus.valueOf("COMPLETED").ordinal());
         result.put("completed", String.valueOf(completed));
-        Long pending = formOrderRepo.countByCreatedByAndStatus(username, OrderStatus.PENDING);
+        Long pending = formOrderRepo.countByCreatedByAndStatus(username, interval, OrderStatus.valueOf("PENDING").ordinal());
         result.put("pending", String.valueOf(pending));
         return result;
     }

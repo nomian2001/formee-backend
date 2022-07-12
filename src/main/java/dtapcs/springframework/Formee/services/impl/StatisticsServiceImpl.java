@@ -3,6 +3,7 @@ package dtapcs.springframework.Formee.services.impl;
 import dtapcs.springframework.Formee.dtos.model.StatisticsDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
 import dtapcs.springframework.Formee.entities.FormeeUser;
+import dtapcs.springframework.Formee.enums.PeriodType;
 import dtapcs.springframework.Formee.enums.StatisticsType;
 import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
@@ -24,22 +25,22 @@ import java.util.Map;
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
     @Autowired
-    UserRepo userRepo;
-    @Autowired
     FormOrderService formOrderService;
+
     @Autowired
     ProductService productService;
+
     @Autowired
     CustomerService customerService;
 
     @Override
-    public List<StatisticsDTO> getAllStatistics() {
+    public List<StatisticsDTO> getAllStatistics(PeriodType type) {
         List<StatisticsDTO> result = new ArrayList<>();
         UserDetails userDetails = CommonHelper.getCurrentUser();
         String username = userDetails.getUsername();
 
         // ORDER ("Thống kê đơn hàng"),
-        Map<String, String> orderStats = formOrderService.getTotalStatistics(username);
+        Map<String, String> orderStats = formOrderService.getTotalStatistics(username, type);
         result.add(new StatisticsDTO(StatisticsType.ORDER, orderStats));
 
         // PRODUCT ("Thống kê sản phẩm"),
@@ -50,12 +51,12 @@ public class StatisticsServiceImpl implements StatisticsService {
         Map<String, String> customerStats = customerService.getTotalStatistics(username);
         result.add(new StatisticsDTO(StatisticsType.CUSTOMER, customerStats));
 
-        // REVENUE ("Thu nhập"),
-        Map<String, String> revenueStatsByYear = formOrderService.getRevenueStatistics(username, 2022);
+        // REVENUE ("Thu nhập và doanh thu") ,
+        Map<String, String> revenueStatsByYear = formOrderService.getRevenueStatistics(username, 2022, type);
         result.add(new StatisticsDTO(StatisticsType.REVENUE, revenueStatsByYear));
 
         // SALES ("Số lượng bán"),
-        Map<String, String> productCategoryStats = formOrderService.getCategoryStatistics(username);
+        Map<String, String> productCategoryStats = formOrderService.getCategoryStatistics(username, type);
         result.add(new StatisticsDTO(StatisticsType.SALES, productCategoryStats));
 
         // TOP_PRODUCTS ("Sản phẩm bán chạy")
@@ -63,7 +64,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         result.add(new StatisticsDTO(StatisticsType.TOP_PRODUCTS, topProductStats));
 
         // CUSTOMER_NUMBER ("Số lượng khách hàng")
-        Map<String, String> customerStatsByYear = formOrderService.getCustomerStatistics(username, 2022);
+        Map<String, String> customerStatsByYear = formOrderService.getCustomerStatistics(username, 2022, type);
         result.add(new StatisticsDTO(StatisticsType.CUSTOMER_NUMBER, customerStatsByYear));
 
         return result;

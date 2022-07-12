@@ -3,6 +3,7 @@ package dtapcs.springframework.Formee.controllers;
 import dtapcs.springframework.Formee.dtos.model.DataResponse;
 import dtapcs.springframework.Formee.dtos.model.StatisticsDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDTO;
+import dtapcs.springframework.Formee.enums.PeriodType;
 import dtapcs.springframework.Formee.services.inf.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class StatisticsController extends BaseController {
     StatisticsService statisticsService;
 
     @GetMapping("")
-    public ResponseEntity getAllStatistics() {
-        List<StatisticsDTO> result = statisticsService.getAllStatistics();
+    public ResponseEntity getAllStatistics(@RequestParam PeriodType type) {
+        List<StatisticsDTO> result = statisticsService.getAllStatistics(type);
         DataResponse response = DataResponse.ok()
                 .withMessage(super.getMessage("message.common.success"))
                 .withResult(result)

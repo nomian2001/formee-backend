@@ -8,8 +8,11 @@ public enum StatisticsType {
     CUSTOMER("Thống kê khách hàng"),
     REVENUE("Thu nhập"),
     SALES("Số lượng bán"),
-    TOP_PRODUCTS("Sản phẩm bán chạy"),
-    CUSTOMER_NUMBER("Số lượng khách hàng");
+    TOP_PRODUCTS("Sản phẩm bán chạy (theo số lượng)"),
+    TOP_PRODUCTS_INCOME("Sản phẩm bán chay (theo doanh thu)"),
+    CUSTOMER_NUMBER("Số lượng khách hàng"),
+    TOTAL_INCOME("Tổng doanh thu"),
+    TOTAL_REVENUE("Tổng thu nhập");
 
     private final String name;
 
