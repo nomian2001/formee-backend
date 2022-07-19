@@ -44,8 +44,6 @@ public interface FormOrderMapper {
     @Mapping(source = "formId", target = "formId", qualifiedByName = "formToFormId")
     @Mapping(source = "comments", target = "comments", qualifiedByName = "commentsToCommentsDTO")
     @Mapping(source = "status", target = "status", qualifiedByName = "orderStatusToEnum")
-    @Mapping(source = "confirmed", target = "confirmed")
-    @Mapping(source = "requested", target = "requested")
     @Mapping(source = "discount", target = "discount")
     @Mapping(source = "shippingFee", target = "shippingFee")
     FormOrderDTO formOrderToFormOrderDTO(FormOrder formOrder);

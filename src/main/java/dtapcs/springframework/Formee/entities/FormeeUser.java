@@ -19,9 +19,6 @@ public class FormeeUser extends Auditable {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "userId")
     private UserSettings userSettings;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-    private Set<UserHistory> userHistories;
-
     private String username;
 
     private String fullName;
@@ -50,9 +47,8 @@ public class FormeeUser extends Auditable {
         this.uuid = uuid;
     }
 
-    public FormeeUser(UserSettings userSettings, Set<UserHistory> userHistories, String username, String fullName, String password, int gender, String email, String profilePicture) {
+    public FormeeUser(UserSettings userSettings, String username, String fullName, String password, int gender, String email, String profilePicture) {
         this.userSettings = userSettings;
-        this.userHistories = userHistories;
         this.username = username;
         this.fullName = fullName;
         this.password = password;
@@ -63,7 +59,7 @@ public class FormeeUser extends Auditable {
 
     public void UpdateProfile(FormeeUser newUser) {
         this.userSettings = newUser.getUserSettings();
-        this.userHistories = newUser.getUserHistories();
+//        this.userHistories = newUser.getUserHistories();
         this.username = newUser.getUsername();
         this.fullName = newUser.getFullName();
         this.password = newUser.getPassword();

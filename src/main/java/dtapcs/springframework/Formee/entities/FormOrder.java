@@ -36,10 +36,6 @@ public class FormOrder extends Auditable {
 
     private Long shippingFee;
 
-    private Boolean confirmed;
-
-    private Boolean requested;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "formId")
     private Form formId;
@@ -56,8 +52,6 @@ public class FormOrder extends Auditable {
         createdDate = dto.getCreatedDate();
         lastModifiedBy = dto.getLastModifiedBy();
         lastModifiedDate = dto.getLastModifiedDate();
-//        confirmed = dto.getConfirmed();
-//        requested = dto.getRequested();
         discount = dto.getDiscount();
         status = dto.getStatus();
         shippingFee = dto.getShippingFee();

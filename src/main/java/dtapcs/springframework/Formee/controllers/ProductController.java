@@ -152,6 +152,15 @@ public class ProductController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/type/create-multiple")
+    public ResponseEntity createMultipleTypes(@RequestBody List<String> types) {
+        typeService.createMultipleTypes(types);
+        DataResponse response = DataResponse.ok()
+                .withMessage(super.getMessage("message.common.success"))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/type/{typeId}")
     public ResponseEntity deleteTypeById(@PathVariable UUID typeId) {
         typeService.deleteById(typeId);

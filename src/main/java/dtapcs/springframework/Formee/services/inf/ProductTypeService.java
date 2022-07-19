@@ -13,4 +13,6 @@ public interface ProductTypeService {
     List<ProductType> findAllTypes();
 
     void deleteById(UUID typeId);
+
+    void createMultipleTypes(List<String> types);
 }
