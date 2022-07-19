@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface CustomerRepo extends JpaRepository<Customer, UUID> {
     List<Customer> findAllByUserIdOrderByCreatedDateDesc(String userId);
 
+    List<Customer> findAllByCreatedByOrderByCreatedDateDesc(String userId);
+
     Customer findByPhoneAndUserId(String phone, String userId);
 
     Long countByCreatedBy(String username);

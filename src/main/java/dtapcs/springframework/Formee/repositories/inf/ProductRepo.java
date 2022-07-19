@@ -17,6 +17,4 @@ public interface ProductRepo extends JpaRepository<Product, UUID> {
 
     Long countByCreatedByAndInventory(String username, Long inventory);
 
-//    @Query(nativeQuery = true, value = "SELECT SUM(inventory) FROM product WHERE created_by = :username")
-//    Long countAllInventory(String username);
 }
