@@ -1,14 +1,17 @@
 package dtapcs.springframework.Formee.services.impl;
 
+import com.itextpdf.text.DocumentException;
 import dtapcs.springframework.Formee.dtos.model.CommentDTO;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
+import dtapcs.springframework.Formee.dtos.request.ExportRequest;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.*;
 import dtapcs.springframework.Formee.enums.OrderStatus;
 import dtapcs.springframework.Formee.enums.PeriodType;
 import dtapcs.springframework.Formee.helper.CommonHelper;
 import dtapcs.springframework.Formee.helper.ExcelHelper;
+import dtapcs.springframework.Formee.helper.PDFHelper;
 import dtapcs.springframework.Formee.repositories.inf.FormOrderRepo;
 import dtapcs.springframework.Formee.repositories.inf.FormRepo;
 import dtapcs.springframework.Formee.repositories.inf.UserRepo;
@@ -25,6 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -164,6 +170,17 @@ public class FormOrderServiceImpl implements FormOrderService {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(file);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> exportInvoice(ExportRequest request) throws DocumentException, IOException, URISyntaxException {
+        FormOrder order = this.getById(request.getOriginalId());
+        byte[] bytes = PDFHelper.exportInvoice(order, request.getEncodedId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(bytes);
     }
 
     @Override

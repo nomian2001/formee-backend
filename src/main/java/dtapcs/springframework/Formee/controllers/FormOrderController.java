@@ -1,9 +1,11 @@
 package dtapcs.springframework.Formee.controllers;
 
+import com.itextpdf.text.DocumentException;
 import dtapcs.springframework.Formee.dtos.mapper.FormOrderMapper;
 import dtapcs.springframework.Formee.dtos.model.DataResponse;
 import dtapcs.springframework.Formee.dtos.model.FormOrderDTO;
 import dtapcs.springframework.Formee.dtos.model.UserDetails;
+import dtapcs.springframework.Formee.dtos.request.ExportRequest;
 import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import dtapcs.springframework.Formee.helper.CommonHelper;
@@ -21,6 +23,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -155,6 +159,11 @@ public class FormOrderController extends BaseController {
     @PostMapping("/export")
     public ResponseEntity<Resource> exportExcel(@RequestBody FormOrderSearchRequest request) {
         return formOrderService.export(request);
+    }
+
+    @PostMapping("/export-invoice")
+    public ResponseEntity<byte[]> exportInvoice(@RequestBody ExportRequest request) throws DocumentException, IOException, URISyntaxException {
+        return formOrderService.exportInvoice(request);
     }
 }
 

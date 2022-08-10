@@ -1,11 +1,8 @@
 package dtapcs.springframework.Formee.helper;
 
-import dtapcs.springframework.Formee.dtos.request.FormOrderSearchRequest;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,15 +11,12 @@ import org.springframework.util.StringUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ExcelHelper {
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String[] HEADERs = {"ID", "Tên đơn hàng", "Số điện thoại", "Tên người mua", "Ngày tạo",
-                                "Trạng thái", "Tổng đơn hàng", "Giảm giá (%)", "Tổng tiền"};
+            "Trạng thái", "Tổng đơn hàng", "Giảm giá (%)", "Tổng tiền"};
     static String SHEET = "Đơn hàng";
 
     public static ByteArrayInputStream FormResponseToExcel(List<FormOrder> formResponseList, String formName, String startDate, String endDate) {
