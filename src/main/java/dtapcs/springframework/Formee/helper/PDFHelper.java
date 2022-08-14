@@ -9,6 +9,7 @@ import com.itextpdf.text.pdf.draw.LineSeparator;
 import dtapcs.springframework.Formee.entities.FormOrder;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,7 +49,8 @@ public class PDFHelper {
         headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         headerCell.setFixedHeight(30);
 
-        Path logoPath = Paths.get(ClassLoader.getSystemResource("formee-logo.png").toURI());
+//        Path logoPath = Paths.get(ClassLoader.getSystemResource("\\formee-logo.png").toURI());
+        Path logoPath = Paths.get(new ClassPathResource("\\formee-logo.png").getURI());
         Image logo = Image.getInstance(logoPath.toAbsolutePath().toString());
         logo.scaleAbsolute(138,30);
         headerCell.setImage(logo);
