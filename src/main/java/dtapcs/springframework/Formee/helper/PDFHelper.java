@@ -40,23 +40,23 @@ public class PDFHelper {
         fontTitle.setSize(16);
 
         // logo
-        PdfPTable headerTable = new PdfPTable(1);
-        headerTable.setSpacingAfter(10f);
-        headerTable.setWidthPercentage(100f);
-        headerTable.setWidths(new int[]{1});
-        PdfPCell headerCell = new PdfPCell();
-        headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        headerCell.setFixedHeight(30);
+//        PdfPTable headerTable = new PdfPTable(1);
+//        headerTable.setSpacingAfter(10f);
+//        headerTable.setWidthPercentage(100f);
+//        headerTable.setWidths(new int[]{1});
+//        PdfPCell headerCell = new PdfPCell();
+//        headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//        headerCell.setFixedHeight(30);
 
 //        Path logoPath = Paths.get(ClassLoader.getSystemResource("\\formee-logo.png").toURI());
-        Path logoPath = Paths.get(new ClassPathResource("\\formee-logo.png").getURI());
-        Image logo = Image.getInstance(logoPath.toAbsolutePath().toString());
-        logo.scaleAbsolute(138,30);
-        headerCell.setImage(logo);
-        headerCell.setBorderWidth(Rectangle.NO_BORDER);
-        headerTable.addCell(headerCell);
-        pdf.add(headerTable);
+//        Path logoPath = Paths.get(new ClassPathResource("\\formee-logo.png").getURI());
+//        Image logo = Image.getInstance(logoPath.toAbsolutePath().toString());
+//        logo.scaleAbsolute(138,30);
+//        headerCell.setImage(logo);
+//        headerCell.setBorderWidth(Rectangle.NO_BORDER);
+//        headerTable.addCell(headerCell);
+//        pdf.add(headerTable);
 
         Paragraph title = new Paragraph("ĐƠN ĐẶT HÀNG - " + order.getOrderName(), fontTitle);
         title.setAlignment(Element.ALIGN_CENTER);
